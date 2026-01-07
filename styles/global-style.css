@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  background: #dddfe1;
+}
+
+.layout {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  align-items: center;
+}
+
+.flex-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* sidebar styles */
+.fixed-sidebar {
+  position: fixed;
+  top:0;
+  left: 0;
+  bottom: 0;
+  width: 220px;
+  background: rgb(12, 146, 12);
+  color: #fff;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* topbar styles */
+.topbar {
+  background: rgb(250, 252, 241);
+  padding: 15px;
+  /* border-bottom: 1px solid #ddd; */
+  margin-bottom: 20px;
+  border-radius: 5px;
+  flex: 1;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.company-name, h2, h4 {
+  margin: 0;
+}
+
+.company-name h2 {
+  margin-bottom: 10px;
+  color: rgb(33, 183, 33);
+  font-weight: bold;
+}
+
+.company-name h4 {
+  color: rgb(177, 55, 55);
+}
+
+.branch {
+  color: #000;
+  font-weight: bold;
+}
+
+.logout-button, .logout-button a {
+  background: red;
+  color: #fff;
+  font-size: 20px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.logout-button a{
+  background: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.logout-button:hover {
+  background: rgb(212, 0, 0);
+}
+
+/* nav-bar styles */
+.sidebar {
+  width: 220px;
+  color: #fff;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar nav a {
+  display: block;
+  padding: 10px 15px;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  transition: 0.5s;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+  background: rgb(29, 214, 29);
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Procurement</title>
+    <link rel="stylesheet" href="styles/global-style.css" />
+    <link rel="stylesheet" href="styles/Forms.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <!-- sidebar -->
+      <aside class="sidebar">
+        <div class="fixed-sidebar">
+          <h2>Karibu Groceries LTD</h2>
+
+          <nav class="nav">
+            <a href="stock-overview.html">Stock overview</a>
+            <a href="procurement.html">Procurement</a>
+            <a href="sales.html">Record sales</a>
+            <a href="credit.html">Credit sales</a>
+            <a href="sales-history.html">Sales history</a>
+            <a href="credit-history.html">Credit records</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- main content -->
+      <main class="content">
+        <!-- top bar -->
+        <header class="topbar">
+          <!-- top headings -->
+          <div class="flex-bar">
+            <div class="company-name">
+              <h4>Manager Dashboard - <span class="branch">Branch</span></h4>
+            </div>
+
+            <!-- logout button -->
+            <button class="logout-button"><a href="login.html">Logout</a></button>
+          </div>
+        </header>
+
+        <section class="page">
+          <!-- porcurement form -->
+          <form id="procForm" class="card">
+            <h4>Procurement Record</h4>
+
+            <div class="grid">
+              <div>
+                <label for="produceName">Produce Name</label>
+                <input
+                  type="text"
+                  id="produceName"
+                  placeholder="Enter produce name"
+                />
+              </div>
+
+              <div>
+                <label for="ProduceType">Produce Type</label>
+                <select id="ProduceType" required>
+                  <option value="">Select Type</option>
+                  <option>Beans</option>
+                  <option>Maize</option>
+                  <option>G-nuts</option>
+                  <option>Cow Peas</option>
+                  <option>Millet</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="date">Date</label>
+                <input type="date" id="date" required />
+              </div>
+
+              <div>
+                <label for="time">Time</label>
+                <input type="time" id="time" required />
+              </div>
+
+              <div>
+                <label for="tonnage">Tonnage (kg)</label>
+                <input
+                  type="number"
+                  id="tonnage"
+                  placeholder="Enter tonnage"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="cost">Cost (UGX)</label>
+                <input
+                  type="number"
+                  id="cost"
+                  placeholder="Enter cost"
+                  min="0"
+                  step="100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="price">Selling Price (UGX)</label>
+                <input
+                  type="number"
+                  id="price"
+                  placeholder="Enter selling price"
+                  min="0"
+                  step="100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="dealer">Dealer Name</label>
+                <input
+                  type="text"
+                  id="dealer"
+                  placeholder="Enter dealer name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="contact">Contact</label>
+                <input
+                  type="tel"
+                  id="contact"
+                  placeholder="Enter contact number"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="branch">Branch</label>
+                <select id="branch" required>
+                  <option value="">-- Select Branch --</option>
+                  <option>Maganjo</option>
+                  <option>Matugga</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit">Save Record</button>
+          </form>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
