@@ -36,7 +36,6 @@ body {
 .topbar {
   background: rgb(250, 252, 241);
   padding: 15px;
-  /* border-bottom: 1px solid #ddd; */
   margin-bottom: 20px;
   border-radius: 5px;
   flex: 1;
@@ -99,6 +98,7 @@ body {
 
 .sidebar nav a {
   display: block;
+  /* width: 200px; */
   padding: 10px 15px;
   color: #fff;
   text-decoration: none;
@@ -110,4 +110,15 @@ body {
 .sidebar nav a.active,
 .sidebar nav a:hover {
   background: rgb(29, 214, 29);
+}
+
+.sidebar nav .icon a {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.icon svg {
+  height: 20px;
+  margin-right: 10px;
 }
