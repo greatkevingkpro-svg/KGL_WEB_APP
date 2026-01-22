@@ -21,12 +21,17 @@
       <!-- form -->
       <form id="loginForm">
         <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter username" required>
+        <input type="text" id="username" placeholder="Enter username" class="js-input-username" required>
 
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="Enter password" required>
 
-        <button type="submit"><a href="stock-overview.html">Login</a></button>
+        <button type="submit" onclick="
+          // loginProcess();
+        ">
+          <a href="stock-overview.html">Login</a>
+          <!-- Login -->
+        </button>
 
         <p id="message"></p>
 
@@ -36,5 +41,6 @@
     </div>
   </div>
 
+  <script src="SCRIPTS/login.js"></script>
 </body>
 </html>

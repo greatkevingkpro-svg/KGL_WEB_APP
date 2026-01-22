@@ -122,3 +122,9 @@ body {
   height: 20px;
   margin-right: 10px;
 }
+
+.icon a:active {
+  color: white;
+  background-color: rgb(33, 183, 33);
+  font-weight: bold;
+}
