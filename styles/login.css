@@ -36,12 +36,12 @@ body {
   margin-bottom: 5px;
   font-weight: bold;
   text-align: left;
-  color: rgb(200, 200, 200);
+  color: rgba(32, 31, 31, 0.945);
 }
 
 .login-card input {
-  width: 94%;
-  padding: 10px 12px;
+  /* width: 94%; */
+  /* padding: 10px 12px; */
   margin-bottom: 10px;
   background: rgba(255, 255, 255, 0.25);
   border: none;
@@ -79,4 +79,8 @@ body {
 .login-card img{
   height: 90px;
   border-radius: 50px;
+}
+
+#checkbox {
+  background-color: rgb(151, 149, 149);
 }
