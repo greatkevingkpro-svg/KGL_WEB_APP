@@ -4,15 +4,19 @@ body {
 
 .login-container {
   background: url(cabbage-5337431_1280.jpg);
+  /* background: url(../Logo_Pic/Beans_2.jpg); */
+  /* background: url(Maize_1.jpg); */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .login-card {
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(10px);
   padding: 30px;
   border-radius: 10px;
@@ -47,6 +51,7 @@ body {
   border: none;
   border-radius: 8px;
   color: white;
+  cursor: pointer;
 }
 
 .login-card button, .login-card button a {
@@ -81,6 +86,40 @@ body {
   border-radius: 50px;
 }
 
-#checkbox {
+/* #checkbox {
   background-color: rgb(151, 149, 149);
+} */
+
+/* creating the toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 250px;
+  padding: 15px 20px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+/* Show toast */
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Success */
+.toast.success {
+  background-color: #28a745;
+}
+
+/* Error */
+.toast.error {
+  background-color: #dc3545;
 }

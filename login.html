@@ -7,6 +7,7 @@
   <title>Login</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
   <link rel="stylesheet" href="styles/login.css">
 </head>
 
@@ -37,11 +38,8 @@
           <label class="form-check-label text-white" for="exampleCheck1">Check me out</label>
         </div>
 
-        <button type="submit" onclick="
-          // loginProcess();
-        ">
-          <a href="stock-overview.html">Login</a>
-          <!-- Login -->
+        <button type="submit" id="loginBtn">
+          Login
         </button>
 
         <p id="message"></p>
@@ -52,9 +50,14 @@
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div id="toast" class="toast"></div>
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
+  <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="SCRIPTS/login.js"></script>
 </body>
 

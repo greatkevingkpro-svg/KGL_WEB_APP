@@ -127,4 +127,9 @@ body {
   color: white;
   background-color: rgb(33, 183, 33);
   font-weight: bold;
+  border-left: 3px solid rgb(180, 245, 156);
 }
+
+/* .icon:active {
+  border-left: 2px solid rgb(138, 252, 96);
+} */
