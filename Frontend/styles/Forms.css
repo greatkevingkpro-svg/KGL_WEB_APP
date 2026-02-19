@@ -1,0 +1,84 @@
+.card {
+  margin-top: 50px;
+  background: #fff;
+  flex: 1;
+  min-width: 180px;
+  max-width: 600px;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.card h4 {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.card p {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.page {
+  padding: 25px;
+}
+
+.card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  margin-left: 145px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+}
+
+.card label {
+  display: block;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.card input {
+  width: 95%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.card button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: rgb(33, 183, 33);;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.5s;
+}
+
+.card button:hover {
+  background: rgb(38, 211, 38);;
+}
+
+.card button:active {
+  background: rgb(33, 183, 33);
+}
