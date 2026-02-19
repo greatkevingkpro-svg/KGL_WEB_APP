@@ -2,16 +2,31 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sales</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock Overview</title>
+  <link rel="stylesheet" href="styles/Table.css" />
   <link rel="stylesheet" href="styles/global-style.css" />
-  <link rel="stylesheet" href="styles/Table.css">
-</head>
+  <link rel="stylesheet" href="styles/dashboard.css" />
 </head>
 
 <body>
   <div class="layout">
+    <!-- top bar -->
+      <header class="topbar">
+        <!-- top headings -->
+        <div class="flex-bar">
+          <div class="company-name">
+            <h4>Manager Dashboard - <span class="branch">Branch</span></h4>
+          </div>
+
+          <!-- logout button -->
+          <button id="logoutBtn" class="logout-button">
+            Logout
+          </button>
+        </div>
+      </header>
+
     <!-- sidebar -->
     <aside class="sidebar">
       <div class="fixed-sidebar">
@@ -95,169 +110,52 @@
               Credit records
             </a>
           </div>
-        </nav>
 
+        </nav>
       </div>
     </aside>
 
     <!-- main content -->
     <main class="content">
-      <!-- top bar -->
-      <header class="topbar">
-        <!-- top headings -->
-        <div class="flex-bar">
-          <div class="company-name">
-            <h4>Manager Dashboard - <span class="branch">Branch</span></h4>
+      
+
+      <!-- navigation bar -->
+
+      <!-- table to display records -->
+      <section class="hero">
+        <div class="cards">
+          <div class="card">
+            <h3>Total Sales</h3>
+            <p>UGX 1,200,000</p>
           </div>
 
-          <!-- logout button -->
-          <button id="logoutBtn" class="logout-button">
-            Logout
-          </button>
-        </div>
-      </header>
+          <div class="card">
+            <h3>Total Stock</h3>
+            <p>15,000 kg</p>
+          </div>
 
-      <section class="hero">
-        <div class="stock-view">
-          <h4>Sales history - branch A</h4>
-
-          <table class="recent-stock" id="procTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Produce</th>
-                <th>Type</th>
-                <th>Tonnage (kg)</th>
-                <th>Amount Paid (Ugx)</th>
-                <th>Buyer Name</th>
-                <th>Sales Agent</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="card">
+            <h3>Active Customers</h3>
+            <p>42</p>
+          </div>
         </div>
 
-        <div class="stock-view">
-          <h4>Sales history - branch B</h4>
-
-          <table class="recent-stock" id="procTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Produce</th>
-                <th>Type</th>
-                <th>Tonnage (kg)</th>
-                <th>Amount Paid (Ugx)</th>
-                <th>Buyer Name</th>
-                <th>Sales Agent</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-
-              <tr>
-                <td>2026-01-05</td>
-                <td>Beans</td>
-                <td>Beans</td>
-                <td>500</td>
-                <td>1000000</td>
-                <td>Axcel</td>
-                <td>Manager1</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="cards1">
+          <div class="second-cards">
+            <p>UGX 1,200,000</p>
+            <h3>Total Sales</h3>
+          </div>
+          <div class="second-cards">
+            <h3>Total Sales</h3>
+            <p>UGX 1,200,000</p>
+          </div>
         </div>
 
+        <div class="graphs">
+          <div class="graph">hello1</div>
+          <div class="graph">hello2</div>
+        </div>
       </section>
-
     </main>
   </div>
 

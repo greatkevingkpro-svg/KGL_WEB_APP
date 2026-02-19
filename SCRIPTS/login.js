@@ -78,7 +78,7 @@ document.getElementById("loginBtn").addEventListener("click", (e) => {
 
   // Redirect to dashboard after a brief delay to show the success message
   setTimeout(() => {
-    window.location.href = "stock-overview.html";
+    window.location.href = "dashboard.html";
   }, 1200);
 
 })
