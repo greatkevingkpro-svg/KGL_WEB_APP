@@ -10,6 +10,7 @@ document.getElementById("saleForm").addEventListener("submit", function (e) {
   const time = document.getElementById("saleTime").value;
   const branch = document.getElementById("saleBranch").value;
 
+
   const alphaNumeric = /^[a-zA-Z0-9 ]+$/;
 
   // VALIDATION
@@ -46,11 +47,15 @@ document.getElementById("saleForm").addEventListener("submit", function (e) {
   stock[index].tonnage -= tonnage;
   localStorage.setItem("stock", JSON.stringify(stock));
 
+  // GET produceType from stock
+  const produceType = stock[index].produceType;  // <-- add this line
+
   // SAVE SALE
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
   sales.push({
     produceName,
+    produceType,
     tonnage,
     amountPaid: Number(amountPaid),
     buyerName,

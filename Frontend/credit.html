@@ -118,12 +118,13 @@
 
       <section class="page">
         <!-- porcurement form -->
-        <form id="procForm" class="card">
+        <form id="creditSaleForm" class="card">
 
           <div class="grid">
+
             <div>
-              <label for="ProduceName">Produce Name</label>
-              <select id="ProduceType" required>
+              <label>Produce Name</label>
+              <select id="creditProduce" required>
                 <option value="">Select Produce</option>
                 <option>Beans</option>
                 <option>Maize</option>
@@ -134,67 +135,72 @@
             </div>
 
             <div>
-              <label for="tonnage">Tonnage (kg)</label>
-              <input type="number" id="tonnage" placeholder="Select produce first" min="0" step="0.01" required />
+              <label>Tonnage (kg)</label>
+              <input type="number" id="creditTonnage" min="1" required />
             </div>
 
             <div>
-              <label for="dealer">Buyer Name</label>
-              <input type="text" id="dealer" placeholder="Enter dealer name" required />
+              <label>Buyer Name</label>
+              <input type="text" id="creditBuyerName" required />
             </div>
 
             <div>
-              <label for="cost">National ID</label>
-              <input type="number" id="cost" placeholder="CM123456789009876" min="0" step="100" required />
+              <label>National ID (NIN)</label>
+              <input type="text" id="creditNIN" placeholder="CM12345678901234" required />
             </div>
 
             <div>
-              <label for="cost">Location</label>
-              <input type="number" id="cost" placeholder="min 2 character" min="0" step="100" required />
+              <label>Location</label>
+              <input type="text" id="creditLocation" required />
             </div>
 
             <div>
-              <label for="cost">Contact</label>
-              <input type="number" id="cost" placeholder="0756014694" min="0" step="100" required />
+              <label>Contact</label>
+              <input type="text" id="creditContact" placeholder="07XXXXXXXX" required />
             </div>
 
             <div>
-              <label for="cost">Amount Due</label>
-              <input type="number" id="cost" placeholder="min 2 character" min="0" step="100" required />
+              <label>Amount Due (UGX)</label>
+              <input type="number" id="creditAmount" min="10000" required />
             </div>
 
             <div>
-              <label for="date">Due Date</label>
-              <input type="date" id="date" required />
+              <label>Dispatch Date</label>
+              <input type="date" id="dispatchDate" required />
             </div>
 
             <div>
-              <label for="branch">Select Agent</label>
-              <select id="branch" required>
-                <option value="">Select Agent</option>
-                <option>Manager1</option>
-                <option>Manager2</option>
-              </select>
+              <label>Due Date</label>
+              <input type="date" id="dueDate" required />
             </div>
 
             <div>
-              <label for="branch">Branch</label>
-              <select id="branch" required>
+              <label>Sales Agent</label>
+              <input type="text" id="creditAgent" required />
+            </div>
+
+            <div>
+              <label>Branch</label>
+              <select id="creditBranch" required>
                 <option value="">Select Branch</option>
                 <option>Maganjo</option>
                 <option>Matugga</option>
               </select>
             </div>
+
           </div>
 
-          <button type="submit">Save Record</button>
+          <button type="submit">Save Credit Sale</button>
         </form>
+
+        <script src="credit.js"></script>
       </section>
 
     </main>
   </div>
 
   <script src="SCRIPTS/logout.js"></script>
+  <script src="SCRIPTS/credit.js"></script>
 </body>
 
 </html>

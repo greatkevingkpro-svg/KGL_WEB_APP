@@ -9,6 +9,20 @@ document.addEventListener("DOMContentLoaded", function () {
   maganjoBody.innerHTML = "";
   matuggaBody.innerHTML = "";
 
+  if (stock.length === 0) {
+    const emptyRow = `
+      <tr>
+        <td colspan="7" style="text-align:center;">
+          No stock available yet.
+        </td>
+      </tr>
+    `;
+
+    maganjoBody.innerHTML = emptyRow;
+    matuggaBody.innerHTML = emptyRow;
+    return;
+  }
+
   stock.forEach(item => {
 
     let status = item.tonnage > 0 ? "Available" : "Out of Stock";
