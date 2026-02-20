@@ -12,19 +12,19 @@
 <body>
   <div class="layout">
     <!-- top bar -->
-      <header class="topbar">
-        <!-- top headings -->
-        <div class="flex-bar">
-          <div class="company-name">
-            <h4>Manager Dashboard - <span class="branch">Branch</span></h4>
-          </div>
-
-          <!-- logout button -->
-          <button id="logoutBtn" class="logout-button">
-            Logout
-          </button>
+    <header class="topbar">
+      <!-- top headings -->
+      <div class="flex-bar">
+        <div class="company-name">
+          <h4>Manager Dashboard - <span class="branch">Branch</span></h4>
         </div>
-      </header>
+
+        <!-- logout button -->
+        <button id="logoutBtn" class="logout-button">
+          Logout
+        </button>
+      </div>
+    </header>
 
     <!-- sidebar -->
     <aside class="sidebar">
@@ -116,81 +116,31 @@
 
     <!-- main content -->
     <main class="content">
-      
+
 
       <!-- navigation bar -->
 
       <!-- table to display records -->
       <section class="hero">
         <div class="stock-view">
-          <h4>Stock overview - branch A</h4>
+          <h4>Maganjo Branch</h4>
 
-          <table class="recent-stock" id="procTable">
+          <table id="maganjoTable" class="recent-stock">
             <thead>
               <tr>
-                <th>Date of production</th>
-                <th>Produce Name</th>
-                <th>Tonnage (kg)</th>
-                <th>Total Sold (kg)</th>
-                <th>Available Stock (kg)</th>
-                <th>Selling Price (Ugx)</th>
+                <th>Produce</th>
+                <th>Type</th>
+                <th>Tonnage</th>
+                <th>Cost</th>
+                <th>Price</th>
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>2026-1-10</td>
-                <td>Beans</td>
-                <td>700</td>
-                <td>300</td>
-                <td>700</td>
-                <td>2000</td>
-                <td>In stock</td>
-              </tr>
-
-              <tr>
-                <td>2026-1-14</td>
-                <td>Maize</td>
-                <td>1500</td>
-                <td>0</td>
-                <td>1500</td>
-                <td>2500</td>
-                <td>In stock</td>
-              </tr>
-
-              <tr>
-                <td>2026-1-16</td>
-                <td>Cow Peas</td>
-                <td>1000</td>
-                <td>0</td>
-                <td>1000</td>
-                <td>3000</td>
-                <td>In stock</td>
-              </tr>
-
-              <tr>
-                <td>2026-1-17</td>
-                <td>Rice</td>
-                <td>900</td>
-                <td>200</td>
-                <td>1800</td>
-                <td>4000</td>
-                <td>In stock</td>
-              </tr>
-
-              <tr>
-                <td>2026-1-20</td>
-                <td>G-nuts</td>
-                <td>1000</td>
-                <td>0</td>
-                <td>1000</td>
-                <td>1700</td>
-                <td>In stock</td>
-              </tr>
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
 
+        <!--  
         <div class="stock-view">
           <h4>Stock overview - branch B</h4>
 
@@ -259,32 +209,31 @@
             </tbody>
           </table>
         </div>
+        -->
 
         <div class="stock-view">
-          <h4>Stock overview - branch C</h4>
+          <h4>Matugga Branch</h4>
 
-          <table class="recent-stock" id="procTable">
+          <table id="matuggaTable" class="recent-stock">
             <thead>
               <tr>
-                <th>Produce Name</th>
+                <th>Produce</th>
                 <th>Type</th>
-                <th>Tonnage (kg)</th>
-                <th>Total Sold (kg)</th>
-                <th>Available Stock (kg)</th>
-                <th>Selling Price (Ugx)</th>
+                <th>Tonnage</th>
+                <th>Cost</th>
+                <th>Price</th>
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody class="js-table-body">
-
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="SCRIPTS/table-generation.js"></script>
+  <script src="SCRIPTS/logout.js"></script>
+  <script src="SCRIPTS/stock-overview.js"></script>
 </body>
 
 </html>

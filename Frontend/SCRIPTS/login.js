@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!existingUser || !Array.isArray(JSON.parse(existingUser))) {
     // Define three default user accounts with different roles
     const defaultUser = [
-      { username: "manager", password: "manager1234", role: "Manager" },
-      { username: "sales agent", password: "agent1234", role: "Sales Agent" },
-      { username: "Orban", password: "director1234", role: "Director" }
+      { username: "manager@gmail.com", password: "manager1234", role: "Manager" },
+      { username: "sales.agent@gmail.com", password: "agent1234", role: "Agent" },
+      { username: "orban@gmail.com", password: "director1234", role: "Director" }
     ];
 
     // Store default users in browser's localStorage
@@ -95,7 +95,7 @@ function showToast(message, type) {
 
   // Set the notification message
   toast.textContent = message;
-  
+
   // Apply styling based on message type and show the toast
   toast.className = `toast show ${type}`;
 
