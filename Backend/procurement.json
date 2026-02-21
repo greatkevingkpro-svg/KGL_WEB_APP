@@ -1,0 +1,14 @@
+[
+  {
+    "produceName": "Beans",
+    "produceType": "Beans",
+    "date": "2026-2-20",
+    "time": "1:33 PM",
+    "tonnage": 1000,
+    "cost": 1000000,
+    "sellingPrice": 2000,
+    "dealerName": "kevin",
+    "contact": "0750123456",
+    "branch": "Maganjo"
+  }
+]
