@@ -1,0 +1,17 @@
+.container {
+  max-width: 1200px;
+}
+
+.table th {
+  background-color: #e9ecef;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}

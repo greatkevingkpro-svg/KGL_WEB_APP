@@ -1,14 +1,23 @@
-document.addEventListener("DOMContentLoaded", function () {
+// Stock Overview Script
+// This script loads stock data from localStorage and displays it in tables for different branches.
+// It runs after the DOM is fully loaded to ensure elements are available.
 
+document.addEventListener("DOMContentLoaded", function () {
+  /** 
+   * Retrieve stock data from localStorage, 
+   * default is empty array if there is no existing stck
+   */
   const stock = JSON.parse(localStorage.getItem("stock")) || [];
 
+  // Select the table body elements for Maganjo and Matugga branches
   const maganjoBody = document.querySelector("#maganjoTable tbody");
   const matuggaBody = document.querySelector("#matuggaTable tbody");
 
-  // Clear tables first
+  // Clear existing table content to prepare for new data
   maganjoBody.innerHTML = "";
   matuggaBody.innerHTML = "";
 
+  // If there is no stock data available, display a message in both tables
   if (stock.length === 0) {
     const emptyRow = `
       <tr>
@@ -20,16 +29,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     maganjoBody.innerHTML = emptyRow;
     matuggaBody.innerHTML = emptyRow;
-    return;
+    return; // Exit the function early because there is no data
   }
 
+  /**
+   * Loop through each stock item and create table rows
+   * when there is existing data or when adding new data
+   */
   stock.forEach(item => {
-
+    // Determine status and color based on tonnage
     let status = item.tonnage > 0 ? "Available" : "Out of Stock";
     let color = item.tonnage > 0 ? "green" : "red";
 
+    // Create a new table row element
     const row = document.createElement("tr");
 
+    // Set the row's HTML content with stock item details
     row.innerHTML = `
       <td>${item.produceName}</td>
       <td>${item.produceType}</td>
@@ -41,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
       </td>
     `;
 
-    // FILTER BY BRANCH
+    // Append the row to the appropriate table based on the branch
     if (item.branch === "Maganjo") {
       maganjoBody.appendChild(row);
     }
@@ -49,7 +64,5 @@ document.addEventListener("DOMContentLoaded", function () {
     if (item.branch === "Matugga") {
       matuggaBody.appendChild(row);
     }
-
   });
-
 });
