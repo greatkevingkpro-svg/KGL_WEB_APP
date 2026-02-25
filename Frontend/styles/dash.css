@@ -1,0 +1,127 @@
+body {
+  background-color: #dddfe1;
+  color: black;
+  font-family: Arial, sans-serif;
+}
+/* 
+.sidebar {
+  width: 250px;
+  background: rgb(12, 146, 12); */
+  /* height: 100vh; */
+  /* full viewport height */
+  /* position: sticky; */
+  /* keeps sidebar in view while scrolling content */
+  /* top: 0; */
+  /* sticks to the top */
+  /* overflow-y: auto; */
+  /* allows scrolling inside sidebar if content is too tall */
+  /* padding: 1rem;
+} */
+
+.top-bar {
+  background-color: rgb(250, 252, 241);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  flex-grow: 1;
+}
+
+#sidebarToggle {
+  margin-left: 8px;
+}
+
+.content-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: rgb(250, 252, 241); /* same as body so it blends */
+  border-radius: 8px;
+  height: 60px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+a svg {
+  height: 20px;
+  margin-right: 10px;
+}
+
+.nav-link {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background-color: rgb(29, 214, 29);
+  border-radius: 5px;
+  color: white;
+}
+
+.analytics-card {
+  background: rgb(250, 252, 241);
+  padding: 20px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.chart-card {
+  background: rgb(250, 252, 241);
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1)
+}
+
+.table thead{
+  background-color: green;
+}
+
+/* Sidebar default */
+.sidebar {
+  width: 280px;
+  background: rgb(12, 146, 12);
+  height: 100vh;
+  position: sticky;
+  /* keeps it sticky on large screens */
+  top: 0;
+  overflow-y: auto;
+  padding: 1rem;
+  transition: transform 0.3s ease, z-index 0s;
+  /* smooth slide */
+  z-index: 1;
+  /* default */
+}
+
+/* Small screens: collapsed sidebar slides out */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    /* must be fixed so it floats above content */
+    top: 0;
+    left: 0;
+    z-index: 1060;
+    /* higher than content */
+    transform: translateX(-100%);
+    /* start hidden */
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    /* slide in */
+  }
+
+  /* Optional: overlay */
+  #sidebarOverlay {
+    display: none;
+    /* JS will toggle */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    /* just below sidebar */
+  }
+}

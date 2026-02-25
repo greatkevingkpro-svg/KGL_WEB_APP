@@ -78,7 +78,7 @@ document.getElementById("loginBtn").addEventListener("click", (e) => {
 
   // Redirect to dashboard after a brief delay to show the success message
   setTimeout(() => {
-    window.location.href = "dashboard.html";
+    window.location.href = "dash.html";
   }, 1200);
 
 })
