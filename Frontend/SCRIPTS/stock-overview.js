@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const maganjoBody = document.querySelector("#maganjoTable tbody");
   const matuggaBody = document.querySelector("#matuggaTable tbody");
 
+  if (!maganjoBody || !matuggaBody) return;
+
   // Clear existing table content to prepare for new data
   maganjoBody.innerHTML = "";
   matuggaBody.innerHTML = "";
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (stock.length === 0) {
     const emptyRow = `
       <tr>
-        <td colspan="7" style="text-align:center;">
+        <td colspan="6" style="text-align:center;">
           No stock available yet.
         </td>
       </tr>
@@ -59,9 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Append the row to the appropriate table based on the branch
     if (item.branch === "Maganjo") {
       maganjoBody.appendChild(row);
-    }
-
-    if (item.branch === "Matugga") {
+    } else if (item.branch === "Matugga") {
       matuggaBody.appendChild(row);
     }
   });
