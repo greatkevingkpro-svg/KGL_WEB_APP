@@ -1,7 +1,7 @@
 const express = require("express");
 const { userModel } = require("../models/UsersModels.js");
 const { KGLErrors } = require("../utils/customError.js");
-const { get } = require("mongoose");
+const bcrypt = require("bcrypt")
 
 // create users routers
 const router = express.Router();
@@ -42,7 +42,9 @@ router.post("/", async (req, res, next) => {
   try {
     let body = req.body;
 
-    body.password = "123456"
+    // hash the password before saving it to the databse
+    const saltRounds = 10;
+    body.password = await bcrypt.hash(body.password, saltRounds);
 
     let user = new userModel(body);
 
@@ -87,6 +89,7 @@ router.delete("/:id", async (req, res, next) => {
       data: deletedUser
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       error: "Failed to delete user",
       details: error.message

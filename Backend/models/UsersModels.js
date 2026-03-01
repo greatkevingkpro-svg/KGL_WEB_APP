@@ -28,10 +28,6 @@ const userSchema = new mongoose.Schema({
       return this.role !== "director";
     }
   },
-  currentBranch: {
-    type: String,
-    enum: ["Maganjo", "Matugga"],
-  },
   status: {
     type: String,
     required: true,
