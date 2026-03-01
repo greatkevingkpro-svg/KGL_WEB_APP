@@ -10,6 +10,7 @@ document.getElementById("saleForm").addEventListener("submit", function (e) {
   const time = document.getElementById("saleTime").value;
   const branch = document.getElementById("saleBranch").value;
 
+  console.log(amountPaid);
 
   const alphaNumeric = /^[a-zA-Z0-9 ]+$/;
 
@@ -18,8 +19,10 @@ document.getElementById("saleForm").addEventListener("submit", function (e) {
 
   if (tonnage <= 0) return alert("Tonnage must be greater than 0.");
 
-  if (amountPaid.length < 5 || isNaN(amountPaid))
+  if (amountPaid.length < 5 || isNaN(amountPaid)) {
     return alert("Amount paid must be numeric and at least 5 digits.");
+  }
+    
 
   if (!alphaNumeric.test(buyerName) || buyerName.length < 2)
     return alert("Buyer name must be alphanumeric and at least 2 characters.");
