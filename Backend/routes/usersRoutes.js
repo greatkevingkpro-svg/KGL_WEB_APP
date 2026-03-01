@@ -42,6 +42,8 @@ router.post("/", async (req, res, next) => {
   try {
     let body = req.body;
 
+    body.password = "123456"
+
     let user = new userModel(body);
 
     user.save()
@@ -49,8 +51,6 @@ router.post("/", async (req, res, next) => {
         res.status(200).json({ message: "User created successfully", data })
       })
       .catch((err) => {
-        console.log("REAL ERROR:", err);
-
         res.status(400).json({ message: err.message, errors: err.errors });
       })
 

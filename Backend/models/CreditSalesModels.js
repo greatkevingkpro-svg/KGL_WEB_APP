@@ -10,7 +10,13 @@ let creditSalesSchema = new mongoose.Schema({
   },
   nationalId: {
     type: String,
-    required: true
+    required: [true, "National ID (NIN) is required"],
+    uppercase: true,
+    trim: true,
+    match: [
+      /^(CM|CF)[0-9]{12}$/,
+      "Enter a valid Ugandan NIN (e.g., CM123456789012)"
+    ]
   },
   location: {
     type: String,
@@ -21,7 +27,12 @@ let creditSalesSchema = new mongoose.Schema({
   },
   contact: {
     type: String,
-    required: true
+    required: [true, "Contact is required"],
+    trim: true,
+    match: [
+      /^(?:\+256|256|0)7[0-9]{8}$/,
+      "Enter a valid Ugandan phone number (e.g., +256701234567)"
+    ]
   },
   amountDue: {
     type: Number,
@@ -61,4 +72,4 @@ let creditSalesSchema = new mongoose.Schema({
 
 let creditSalesModel = mongoose.model("credit-sales", creditSalesSchema);
 
-module.exports = {creditSalesModel};
+module.exports = { creditSalesModel };

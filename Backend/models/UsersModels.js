@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  password: {
+    type: String,
+    required: true,
+  },
   role: {
     type: String,
     required: true,
@@ -26,7 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   currentBranch: {
     type: String,
-    enum: ["Maganjo", "Matuga"],
+    enum: ["Maganjo", "Matugga"],
   },
   status: {
     type: String,

@@ -16,6 +16,7 @@ const {router: procurementRouter} = require("./routes/procRoutes.js");
 const {router: salesRouter} = require("./routes/salesRoutes.js");
 const {router: creditSales} = require("./routes/creditSalesRoutes.js")
 const {router: usersRouter} = require("./routes/usersRoutes.js");
+const {router: authRouter} = require("./routes/auth.js");
 
 
 const app = express();
@@ -55,11 +56,11 @@ const swaggerSpec = swaggerJSDoc(options);
 // setup swagger UI
 app.use("/KGL_API_DOCS", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
 
-
+// allow all origins
+app.use(cors());
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 
 // get request to the homepage
@@ -67,11 +68,15 @@ app.get("/", (req, res) => {
   res.send("Welcome to Karibu Groceries LTD");
 })
 
+// login request 
+app.post("/login", (req, res) => {})
+
 // use all the imported routers for related path
 app.use("/procurements", procurementRouter);
 app.use("/sales", salesRouter);
 app.use("/credit-sales", creditSales);
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 
 // error handling middleware
 app.use(errorHandler);
