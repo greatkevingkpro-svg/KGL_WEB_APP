@@ -3,6 +3,7 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJSDoc = require("swagger-jsdoc");
 const basicAuth = require("express-basic-auth");
+require("dotenv").config();
 
 // database connection
 const {connectToMongoDB} = require("./mongodb-app-server.js")
@@ -16,7 +17,7 @@ const {router: procurementRouter} = require("./routes/procRoutes.js");
 const {router: salesRouter} = require("./routes/salesRoutes.js");
 const {router: creditSales} = require("./routes/creditSalesRoutes.js")
 const {router: usersRouter} = require("./routes/usersRoutes.js");
-const {router: authRouter} = require("./routes/auth.js");
+const authRouter = require("./routes/auth.js");
 
 const {authMiddleware} = require("./middleware/authMiddleware.js")
 const {protectedRouter} = require("./middleware/protectedRouter.js")
