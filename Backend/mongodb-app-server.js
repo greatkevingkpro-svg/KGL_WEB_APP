@@ -20,8 +20,8 @@ const connectToMongoDB = async () => {
     }
 
     console.log("Encrypted passwrod");
-  } catch {
-    console.log(err);
+  } catch (err) {
+    console.log("MongoDB connection error:", err);
   }
 };
 
