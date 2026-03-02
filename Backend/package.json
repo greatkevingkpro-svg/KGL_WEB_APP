@@ -4,7 +4,8 @@
   "description": "",
   "main": "mongodb-app-server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node webapp_server.js"
   },
   "keywords": [],
   "author": "",

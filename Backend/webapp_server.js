@@ -87,7 +87,7 @@ protectedRouter.use("/users", usersRouter);
 // error handling middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3050;
 app.listen(PORT, (err) => {
   if (err) {
     console.log("Error starting the server:", err)
