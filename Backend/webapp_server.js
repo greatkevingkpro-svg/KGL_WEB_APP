@@ -74,7 +74,7 @@ app.get("/", (req, res) => {
 // login request 
 app.post("/login", (req, res) => {})
 
-app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
 app.use("/", authMiddleware, protectedRouter);
 
 // use all the imported routers for related path
