@@ -76,7 +76,7 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => { })
 
 app.use("/api/auth", authRouter);
-app.use("/", authMiddleware, protectedRouter);
+app.use("/api", authMiddleware, protectedRouter);
 
 // use all the imported routers for related path
 protectedRouter.use("/procurements", procurementRouter);
