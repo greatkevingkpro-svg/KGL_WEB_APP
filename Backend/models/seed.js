@@ -5,14 +5,14 @@ const seedUsers = async () => {
     const users = [
       {
         name: "Mr Director",
-        userName: "director@email.com",
+        userName: "directorofall@email.com",
         password: "123456",
         role: "director",
         status: "active"
       },
       {
         name: "Mr Manager",
-        userName: "manager@email.com",
+        userName: "managerofproc@email.com",
         password: "123456",
         role: "manager",
         branch: "Maganjo",
@@ -20,7 +20,7 @@ const seedUsers = async () => {
       },
       {
         name: "Mr Agent",
-        userName: "agent@email.com",
+        userName: "agentofsales@email.com",
         password: "123456",
         role: "sales agent",
         branch: "Matugga",
