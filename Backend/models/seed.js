@@ -50,8 +50,7 @@ const seedUsers = async () => {
         for (let user of users) {
             const existingUser = await userModel.findOne({ userName: user.userName });
             if (!existingUser) {
-                user.password = await bcrypt.hash(user.password, 10); // hash password
-                await userModel.create(user);
+                await userModel.create(user); // pre-save hook hashes password automatically
                 console.log(`Inserted ${user.role}`);
             } else {
                 console.log(`${user.role} already exists`);
