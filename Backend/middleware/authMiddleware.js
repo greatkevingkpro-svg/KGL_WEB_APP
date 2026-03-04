@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 // middleware that checks JWT
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.query.token || req.headers.authorization?.split(" ")[1];
   // console.log("HEADERS:", req.headers);
   // console.log("AUTH HEADER:", req.headers.authorization);
 
