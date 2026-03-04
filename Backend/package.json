@@ -5,8 +5,7 @@
   "main": "mongodb-app-server.js",
   "scripts": {
     "test": "jest",
-    "start": "node webapp_server.js",
-    "postinstall": "node models/seed.js"
+    "start": "node webapp_server.js"
   },
   "keywords": [],
   "author": "",
