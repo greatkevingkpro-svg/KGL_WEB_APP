@@ -1,5 +1,5 @@
-// const { required, func } = require("joi");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,10 +22,10 @@ const userSchema = new mongoose.Schema({
   },
   branch: {
     type: String,
-    enum: ["Maganjo", "Matuga"],
+    enum: ["Maganjo", "Matugga"],
     required: function () {
       console.log("ROLE VALUE:", this.role);
-      return this.role !== "director";
+      return this.role.toLowerCase() !== "director";
     }
   },
   status: {
@@ -34,6 +34,17 @@ const userSchema = new mongoose.Schema({
     enum: ["active", "inactive"]
   }
 }, { timestamps: true });
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 const userModel = mongoose.model("users", userSchema);
 
