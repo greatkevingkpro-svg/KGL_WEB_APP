@@ -1,22 +1,22 @@
 <script setup>
 
-	import { reactive } from "vue";
-	import axios from "../utils/axios";
+import { reactive } from "vue";
+import axios from "../utils/axios";
 
-	const form = reactive({
-		userName: "",
-		password: "",
-	})
+const form = reactive({
+	userName: "",
+	password: "",
+})
 
-	async function login() {
-		// alert(form.userName+ form.password);
-		try {
+async function login() {
+	// alert(form.userName+ form.password);
+	try {
 		const response = await axios.post("/api/auth/login", {
 			userName: form.userName,
 			password: form.password
 		});
 
-		if(response.status === 200) {
+		if (response.status === 200) {
 			console.log(response.data);
 			alert("login successful")
 		} else {
@@ -27,8 +27,8 @@
 		alert("Something went wrong");
 	}
 
-		
-	}
+
+}
 
 </script>
 
@@ -46,12 +46,13 @@
 			<!-- form -->
 			<form action="" id="loginForm" @submit.prevent="login">
 				<div class="form-floating mb-3">
-					<input type="email" v-model="form.userName"
-					class="form-control" id="userName" placeholder="name@example.com" required>
+					<input type="email" v-model="form.userName" class="form-control" id="userName"
+						placeholder="name@example.com" required>
 					<label for="floatingInput">username</label>
 				</div>
 				<div class="form-floating">
-					<input type="password" v-model="form.password" class="form-control" id="password" placeholder="Password" required>
+					<input type="password" v-model="form.password" class="form-control" id="password"
+						placeholder="Password" required>
 					<label for="floatingPassword">Password</label>
 				</div>
 				<div class="mb-3 form-check">
