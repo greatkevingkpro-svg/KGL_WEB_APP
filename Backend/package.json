@@ -5,7 +5,8 @@
   "main": "mongodb-app-server.js",
   "scripts": {
     "test": "jest",
-    "start": "node webapp_server.js"
+    "start": "node webapp_server.js",
+    "seed": "node models/seed.js"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,7 @@
     "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "4.1",
-    "mongoose": "^9.2.2",
+    "mongoose": "^9.2.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },

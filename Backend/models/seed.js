@@ -15,7 +15,10 @@ const seedUsers = async () => {
                 $in: [
                     "directorofall@email.com",
                     "managerofproc@email.com",
-                    "agentofsales@email.com"
+                    "agentofsales@email.com",
+                    "directorofall@gmail.com",
+                    "managerofproc@gmail.com",
+                    "agentofsales@gmail.com"
                 ]
             }
         });
@@ -24,14 +27,14 @@ const seedUsers = async () => {
         const users = [
             {
                 name: "Mr Director",
-                userName: "directorofall@email.com",
+                userName: "directorofall@gmail.com",
                 password: "123456",
                 role: "director",
                 status: "active"
             },
             {
                 name: "Mr Manager",
-                userName: "managerofproc@email.com",
+                userName: "managerofproc@gmail.com",
                 password: "123456",
                 role: "manager",
                 branch: "Maganjo",
@@ -39,7 +42,7 @@ const seedUsers = async () => {
             },
             {
                 name: "Mr Agent",
-                userName: "agentofsales@email.com",
+                userName: "agentofsales@gmail.com",
                 password: "123456",
                 role: "sales agent",
                 branch: "Matugga",
