@@ -1,6 +1,6 @@
 <script setup>
 
-import { reactive, ref, onMounted, onUnmounted } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import "../assets/custom-styles/main.css";
 import { Chart } from "chart.js/auto";
 

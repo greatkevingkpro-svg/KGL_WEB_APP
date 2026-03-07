@@ -12,14 +12,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- <div  class="d-flex position-absolute z-3 vh-100 vw-100" style="background-color: rgba(0,0,0,0.5);"> -->
-        <!-- <div v-if="usersStore.isLoading" class="d-flex justify-content-center align-items-center position-absolute z-3 vh-100 vw-100" style="background-color: rgba(0,0,0,0.5);">
-            <div class="spinner-border text-success" role="status" style="width: 8rem; height: 8rem;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div> -->
-    <!-- </div> -->
-
 
     <!-- MAIN CONTENT -->
     <div class="content w-100">
@@ -49,28 +41,7 @@ onMounted(() => {
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
-                    <!-- <tr>
-              <td>John Doe</td>
-              <td>john@example.com</td>
-              <td>Admin</td>
-              <td>produce</td>
-              <td>Active</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-2">Edit</button>
-                <button class="btn btn-sm btn-danger">Delete</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Jane Smith</td>
-              <td>jane@example.com</td>
-              <td>User</td>
-              <td>sales</td>
-              <td>Active</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-2">Edit</button>
-                <button class="btn btn-sm btn-danger">Delete</button>
-              </td>
-            </tr> -->
+                    
                 </tbody>
             </table>
 

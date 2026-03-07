@@ -34,13 +34,12 @@ async function login() {
 
             switch (userStore.user.role) {
                 case "manager":
-                    router.push("/dashboard/user")
+                case "sales agent":
+                    router.push("/dashboard/roleDashboard")
                     break;
                 case "director":
                     router.push("/dashboard/director")
                     break;
-                case "sales agent":
-                    router.push("/dashboard/sales")
 
                 default:
                     router.push("/access")

@@ -46,7 +46,7 @@ onUnmounted(() => {
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/director" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -55,8 +55,20 @@ onUnmounted(() => {
                         Dashboard
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/roleDashboard" class="nav-link d-flex align-items-center" exact-active-class="active">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
+                        </svg>
+                        2 Dashboard
+                    </router-link>
+                </li>
+
+                <li class="nav-item">
+                    <router-link to="/dashboard/total-sales" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -66,8 +78,9 @@ onUnmounted(() => {
                         Total Sales
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/stock-summary" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -77,8 +90,9 @@ onUnmounted(() => {
                         Stock Summary
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/report" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -87,8 +101,9 @@ onUnmounted(() => {
                         Reports
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/stock-branch" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -97,8 +112,9 @@ onUnmounted(() => {
                         Stock Overview
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/produce" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -107,8 +123,9 @@ onUnmounted(() => {
                         Record Produce
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/sales" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -117,8 +134,9 @@ onUnmounted(() => {
                         Record Sales
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/credit-sales" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -127,8 +145,9 @@ onUnmounted(() => {
                         Record Credits
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/sales-branch" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -137,8 +156,9 @@ onUnmounted(() => {
                         Sales History
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/credit-branch" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -147,8 +167,9 @@ onUnmounted(() => {
                         Credits History
                     </router-link>
                 </li>
+
                 <li class="nav-item">
-                    <router-link to="" class="nav-link d-flex align-items-center" exact-active-class="active">
+                    <router-link to="/dashboard/user" class="nav-link d-flex align-items-center" exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
