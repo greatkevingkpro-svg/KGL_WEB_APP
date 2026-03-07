@@ -22,6 +22,7 @@ router.post("/login", async (req, res) => {
 
     // buildind jwt payload
     let user = {
+      name: _user.name,
       userName: _user.userName,
       role: _user.role,
       branch: _user.branch,
