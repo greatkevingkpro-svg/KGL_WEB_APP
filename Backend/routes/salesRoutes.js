@@ -158,13 +158,9 @@ router.post("/", async (req, res, next) => {
   try {
     let sales = new salesModel(body);
 
-    sales.save()
-      .then(() => {
-        res.status(201).json({message: "Sales record created successfully", sales})
-      })
-      .catch((err) => {
-        throw new KGLErrors("Failed to create sales record", 400, err.message);
-      });
+    const savedSales = await sales.save()
+    
+    res.status(201).json({ message: "Sale saved successfully", data: savedSales });
   } catch (err) {
     next(new KGLErrors("An error occurred while processing the request", 500, err.message));
   }
