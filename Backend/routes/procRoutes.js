@@ -216,24 +216,19 @@ router.get("/:id", async (req, res, next) => {
  *                 type: string
  *                 description: The branch where the procurement took place
  */
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const body = req.body;
 
   try {
-    // Create new document
     const procurement = new procurementModel(body);
 
-    // Save to DB
-    procurement.save()
-      .then(() => { 
-        res.status(201).json({ message: "Procurement saved successfully to the database", data: body });
-      })
-      .catch((error) => {
-        next(new KGLErrors("There was an error saving procurement data to the database", 400, error.message));
-      });
+    await procurement.save();
+
+    res.status(201).json({ message: "Procurement saved successfully", data: body });
 
   } catch (error) {
-    next(new KGLErrors("There was an error processing your request", 400, error.message));
+    console.error("Error saving procurement:", error);
+    res.status(500).json({ message: "There was an error saving procurement data", error: error.message });
   }
 });
 
