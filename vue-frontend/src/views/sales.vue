@@ -2,6 +2,35 @@
 
 import "../assets/custom-styles/main.css";
 
+import { reactive, ref } from "vue";
+import { useSalesStore } from "@/stores/salesStore";
+
+const salesStore = useSalesStore();
+
+const form = reactive({
+    produceName: "",
+    tonnage: "",
+    amountPaid: "",
+    buyerName: "",
+    salesAgent: "",
+    dateOfSale: "",
+    timePurchaseMade: "",
+    branch: ""
+})
+
+const isLoading = ref(false)
+
+async function submitSale() {
+    try {
+        isLoading.value = true;
+        await salesStore.recordNewSale(form);
+    } catch (error) {
+        console.log(error)
+    } finally {
+        isLoading.value = false;;
+    }
+}
+
 </script>
 
 <template>
@@ -18,79 +47,54 @@ import "../assets/custom-styles/main.css";
                 </div>
 
                 <div class="card-body">
-                    <form id="saleForm">
+                    <form id="saleForm" @submit.prevent="submitSale">
 
                         <div class="row g-3">
                             <!-- produce name -->
                             <div class="col-md-6">
                                 <label for="produceName" class="form-label">Produce Name</label>
-                                <input type="text" class="form-control" id="produceName"
+                                <input type="text" class="form-control" id="produceName" v-model="form.produceName"
                                     placeholder="Enter produce name" required>
                             </div>
 
-                            <!-- produce type -->
-                            <!-- <div class="col-md-6">
-                  <label for="produceType" class="form-label">Produce Type</label>
-                  <select class="form-select" id="produceType" required>
-                    <option value="">Select Type</option>
-                    <option>Beans</option>
-                    <option>Maize</option>
-                    <option>G-nuts</option>
-                    <option>Cow Peas</option>
-                    <option>Millet</option>
-                  </select>
-                </div> -->
-
                             <!-- tonnage -->
                             <div class="col-md-6">
-                                <label for="saleTonnage" class="form-label">Tonnage (kg)</label>
-                                <input type="number" class="form-control" id="saleTonnage" min="1" step="0.01" required>
+                                <label for="tonnage" class="form-label">Tonnage (kg)</label>
+                                <input type="number" class="form-control" id="tonnage" v-model="form.tonnage" min="1" step="0.01" required>
                             </div>
 
                             <!-- amoutPaid -->
                             <div class="col-md-6">
                                 <label for="amoutPaid" class="form-label">Amout Paid (UGX)</label>
-                                <input type="number" class="form-control" id="amoutPaid" required>
+                                <input type="number" class="form-control" id="amoutPaid" v-model="form.amountPaid" required>
                             </div>
-
-                            <!-- selling price -->
-                            <!-- <div class="col-md-6">
-                  <label for="price" class="form-label">Selling Price (UGX)</label>
-                  <input type="number" class="form-control" id="price" required>
-                </div> -->
 
                             <!-- buyer name -->
                             <div class="col-md-6">
                                 <label for="buyerName" class="form-label">Buyer Name</label>
-                                <input type="text" class="form-control" id="buyerName" required>
+                                <input type="text" class="form-control" id="buyerName" v-model="form.buyerName" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="agentName" class="form-label">Sales Agent</label>
-                                <input type="text" class="form-control" id="agentName" required>
+                                <label for="salesAgent" class="form-label">Sales Agent</label>
+                                <input type="text" class="form-control" id="salesAgent" v-model="form.salesAgent" required>
                             </div>
 
                             <!-- date -->
                             <div class="col-md-6">
-                                <label for="saleDate" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="saleDate" required>
+                                <label for="dateOfSale" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="dateOfSale" v-model="form.dateOfSale" required>
                             </div>
 
                             <!-- time -->
                             <div class="col-md-6">
-                                <label for="saleTime" class="form-label">Time</label>
-                                <input type="time" class="form-control" id="saleTime" required>
+                                <label for="timePurchaseMade" class="form-label">Time</label>
+                                <input type="time" class="form-control" id="timePurchaseMade" v-model="form.timePurchaseMade" required>
                             </div>
-
-                            <!-- contact -->
-                            <!-- <div class="col-md-6">
-                  <label for="contact" class="form-label">Contact</label>
-                  <input type="tel" class="form-control" id="contact" required>
-                </div> -->
 
                             <div class="col-md-6">
                                 <label for="branch" class="form-label">Branch</label>
-                                <select class="form-select" id="branch" required>
+                                <select class="form-select" id="branch" v-model="form.branch" required>
                                     <option value="">-- Select Branch --</option>
                                     <option>Maganjo</option>
                                     <option>Matugga</option>
@@ -100,8 +104,9 @@ import "../assets/custom-styles/main.css";
                         </div>
 
                         <div class="mt-4 text-end">
-                            <button id="submitBtn" type="submit" class="btn text-white px-4">
-                                Record Sale
+                            <button id="submitBtn" type="submit"
+                            :disabled="isLoading" class="btn text-white px-4">
+                                {{ isLoading ? "Saving..." : "Record Sale" }}
                             </button>
                         </div>
 
