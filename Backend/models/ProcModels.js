@@ -1,3 +1,4 @@
+const { string } = require("joi");
 const mongoose = require("mongoose");
 
 let procurementSchema = new mongoose.Schema({
@@ -11,7 +12,7 @@ let procurementSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: [2, "Type must be at least 2 characters"],
-    match: [/^[A-Za-z\s]+$/, "Type must contain alphabetic characters only"],
+    match: [/^[A-Za-z\s-]+$/, "Type must contain alphabetic characters, spaces, or hyphens only"],
     trim: true
   },
   date: {

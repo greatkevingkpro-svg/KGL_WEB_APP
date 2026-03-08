@@ -222,9 +222,9 @@ router.post("/", async (req, res, next) => {
   try {
     const procurement = new procurementModel(body);
 
-    await procurement.save();
+    const savedProcurement = await procurement.save();
 
-    res.status(201).json({ message: "Procurement saved successfully", data: body });
+    res.status(201).json({ message: "Procurement saved successfully", data: savedProcurement });
 
   } catch (error) {
     console.error("Error saving procurement:", error);
