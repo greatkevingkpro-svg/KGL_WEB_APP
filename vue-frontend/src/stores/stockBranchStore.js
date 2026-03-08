@@ -20,5 +20,9 @@ export const useStockBranchStore = defineStore("stock", () => {
         }
     }
 
-    return {allBranchStock, isLoading, fetchStockForAllBranches}
+    return {
+        allBranchStock, 
+        isLoading, 
+        fetchStockForAllBranches
+    }
 })
