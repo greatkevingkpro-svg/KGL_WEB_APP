@@ -1,13 +1,37 @@
 <script setup>
 
-import { onMounted } from 'vue';
-import { useUserInfoStore } from '@/stores/userInfoStore';
+import { onMounted, reactive, ref } from 'vue';
+import { useUserInfoStore, usePostUserStore } from '@/stores/userInfoStore';
 
 const usersStore = useUserInfoStore();
 
 onMounted(() => {
     usersStore.fetchUserRecords()
 })
+
+const postUserStore = usePostUserStore();
+
+const form = reactive({
+    name: "",
+    userName: "",
+    password: "",
+    role: "",
+    branch: "",
+    status: ""
+})
+
+const isLoading = ref(false);
+
+async function addUser() {
+    try {
+        isLoading.value = true;
+        await postUserStore.recordNewUser(form);
+    } catch (error) {
+        console.log(error)
+    } finally {
+        isLoading.value = false
+    }
+}
 
 </script>
 
@@ -41,7 +65,7 @@ onMounted(() => {
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
-                    
+
                 </tbody>
             </table>
 
@@ -66,22 +90,22 @@ onMounted(() => {
                             <!-- Name Field -->
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" required>
+                                <input type="text" class="form-control" id="name" v-model="form.name" required>
                             </div>
                             <!-- Email Field -->
                             <div class="mb-3">
                                 <label for="userName" class="form-label">User Name</label>
-                                <input type="email" class="form-control" id="userName" required>
+                                <input type="email" class="form-control" id="userName" v-model="form.userName" required>
                             </div>
                             <!-- password Field -->
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="text" class="form-control" id="password" required>
+                                <input type="Password" class="form-control"id="password" v-model="form.password" required>
                             </div>
                             <!-- Role Field -->
                             <div class="mb-3">
-                                <label for="userRole" class="form-label">Role</label>
-                                <select class="form-select" id="userRole" required>
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" v-model="form.role" required>
                                     <option value="">Select Role</option>
                                     <option value="director">director</option>
                                     <option value="manager">manager</option>
@@ -92,7 +116,7 @@ onMounted(() => {
                             <!-- depart Field -->
                             <div class="mb-3">
                                 <label for="branch" class="form-label">Branch</label>
-                                <select class="form-select" id="branch" required>
+                                <select class="form-select" id="branch" v-model="form.branch" required>
                                     <option value="">Select branch</option>
                                     <option value="branch-1">Maganjo</option>
                                     <option value="branch-2">Matugga</option>
@@ -101,8 +125,8 @@ onMounted(() => {
 
                             <!-- Status Field -->
                             <div class="mb-3">
-                                <label for="userStatus" class="form-label">Status</label>
-                                <select class="form-select" id="userStatus" required>
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" v-model="form.status" required>
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
@@ -113,7 +137,7 @@ onMounted(() => {
                     <!-- Modal Footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveUserBtn">Save User</button>
+                        <button type="submit" @click="addUser" class="btn btn-primary" id="saveUserBtn" :disabled="isLoading">{{ isLoading ? "Saving..." : "Add User" }}</button>
                     </div>
                 </div>
             </div>

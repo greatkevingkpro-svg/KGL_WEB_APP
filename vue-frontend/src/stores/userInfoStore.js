@@ -22,5 +22,42 @@ export const useUserInfoStore = defineStore("users",()=> {
 
     }
 
-    return {users, isLoading, fetchUserRecords}
+    return {
+        users,
+        isLoading, 
+        fetchUserRecords,
+    }
 })
+
+export const usePostUserStore = defineStore("users",()=> {
+    const postUser = ref([]);
+    const error = ref(null);
+
+    // record new user
+    async function recordNewUser(userData) {
+        error.value = null;
+
+        try {
+            const response = await axios.post("/api/users", userData);
+
+            // add new user to the list
+            postUser.value.push(response.data);
+
+            alert("New user created successful")
+
+            return response.data
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message;
+            console.log(err);
+        }
+    }
+
+    return {
+        postUser,
+        error,
+        recordNewUser
+    }
+},
+{
+    persist: true
+});
