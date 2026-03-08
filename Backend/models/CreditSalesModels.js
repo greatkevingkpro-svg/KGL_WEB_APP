@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 let creditSalesSchema = new mongoose.Schema({
@@ -34,31 +35,12 @@ let creditSalesSchema = new mongoose.Schema({
       "Enter a valid Ugandan phone number (e.g., +256701234567)"
     ]
   },
-  amountDue: {
-    type: Number,
-    required: true,
-    minlength: 5
-  },
-  salesAgent: {
+  produceName: {
     type: String,
     required: true,
     minlength: 2,
     match: /^[a-zA-Z0-9 ]+$/, // allows letters, numbers, and spaces
     message: "Agent name must be alphanumeric and at least 2 characters"
-  },
-  dueDate: {
-    type: Date,
-    required: true
-  },
-  produceName: {
-    type: String,
-    required: true,
-    minlength: 2,
-  },
-  produceType: {
-    type: String,
-    required: true,
-    minlength: 2,
   },
   tonnage: {
     type: Number,
@@ -67,6 +49,34 @@ let creditSalesSchema = new mongoose.Schema({
   dispatchDate: {
     type: Date,
     required: true
+  },
+  time: {
+    type: String,
+    required: true
+  },
+  amountDue: {
+    type: Number,
+    required: true,
+    minlength: 5
+  },
+  dueDate: {
+    type: Date,
+    required: true
+  },
+  salesAgent: {
+    type: String,
+    required: true,
+    minlength: 2,
+    match: /^[a-zA-Z0-9 ]+$/, // allows letters, numbers, and spaces
+    message: "Agent name must be alphanumeric and at least 2 characters"
+  },
+  branch: {
+    type: String,
+    required: true,
+    enum: {
+      values: ["Maganjo", "Matugga"],
+      message: "Branch must be either Maganjo or Matugga"
+    }
   }
 })
 

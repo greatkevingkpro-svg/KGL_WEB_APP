@@ -36,7 +36,7 @@ let procurementSchema = new mongoose.Schema({
   sellingPrice: {
     type: Number,
     required: true,
-    min: [10000, "Selling price must be at least 5 digits"]
+    min: [100, "Selling price must be at least 3 digits"]
   },
 
   dealerName: {

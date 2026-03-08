@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 let salesSchema = new mongoose.Schema({
@@ -36,9 +37,17 @@ let salesSchema = new mongoose.Schema({
   timePurchaseMade: {
     type: String,
     required: true
+  },
+  branch: {
+    type: String,
+    required: true,
+    enum: {
+      values: ["Maganjo", "Matugga"],
+      message: "Branch must be either Maganjo or Matugga"
+    }
   }
 
-});
+}, { timestamps: true });
 
 let salesModel = mongoose.model("sales", salesSchema);
 
