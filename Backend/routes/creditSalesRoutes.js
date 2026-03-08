@@ -210,8 +210,9 @@ router.post("/", async (req, res, next) => {
       
     res.status(201).json({message: "credit Sale record created successfully", data: savedcreditSales})
 
-  } catch (err) {
-    next(new KGLErrors("An error occurred while processing the request", 500, err.message));
+  } catch (error) {
+    console.error("Error saving credit sales:", error);
+    res.status(500).json({ message: "There was an error saving credit sales data", error: error.message });
   }
 })
 

@@ -161,8 +161,10 @@ router.post("/", async (req, res, next) => {
     const savedSales = await sales.save()
     
     res.status(201).json({ message: "Sale saved successfully", data: savedSales });
-  } catch (err) {
-    next(new KGLErrors("An error occurred while processing the request", 500, err.message));
+    
+  } catch (error) {
+    console.error("Error saving sales:", error);
+    res.status(500).json({ message: "There was an error saving sales data", error: error.message });
   }
 })
 
