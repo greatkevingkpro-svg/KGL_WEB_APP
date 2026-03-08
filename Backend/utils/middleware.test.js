@@ -2,7 +2,7 @@
 const request = require("supertest");
 // const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware.js");
-const { authorizeRoles } = require("../middleware/salesAuth.js");
+const { authorizeRoles } = require("../middleware/authorizeRoles.js");
 const jwt = require("jsonwebtoken");
 
 require("dotenv").config(); // make sure JWT_SECRET_KEY is loaded

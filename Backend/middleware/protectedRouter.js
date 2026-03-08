@@ -1,6 +1,6 @@
 const express = require("express");
 const protectedRouter = express.Router();
-const { authorizeRoles } = require("./salesAuth.js");
+const { authorizeRoles } = require("./authorizeRoles.js");
 const { salesModel } = require("../models/SalesModels.js")
 const { creditSalesModel } = require("../models/CreditSalesModels.js")
 const { procurementModel } = require("../models/ProcModels.js")
