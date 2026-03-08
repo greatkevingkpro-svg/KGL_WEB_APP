@@ -63,6 +63,6 @@ let procurementSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-const procurementModel = mongoose.model("Procurement", procurementSchema);
+const procurementModel = mongoose.model("procurements", procurementSchema);
 
 module.exports = { procurementModel };

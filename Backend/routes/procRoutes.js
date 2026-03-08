@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /procurements:
+ * /api/procurements:
  *   get:
  *     summary: Get all users
  *     description: Retrieve a list of all users in the system
@@ -87,7 +87,7 @@ router.get("/", async (req, res) => {
 
 /**
  * @swagger
- * /procurements/{id}:
+ * /api/procurements/{id}:
  *   get:
  *     summary: Get procurement data by ID
  *     description: Retrieve procurement data from the database using a unique ID.
@@ -168,7 +168,7 @@ router.get("/:id", async (req, res, next) => {
 
 /**
  * @swagger
- * /procurements
+ * /api/procurements
  *   post:
  *     summary: Create new procurement records
  *     description: Creates a new procurement record in the database with the provided information.
