@@ -10,10 +10,10 @@ const router = express.Router();
  * @swagger
  * /api/procurements:
  *   get:
- *     summary: Get all users
+ *     summary: Get all procurements
  *     description: Retrieve a list of all users in the system
  *     tags:
- *       - Users
+ *       - Procurements
  *     responses:
  *       200:
  *         description: A list of users
@@ -92,7 +92,7 @@ router.get("/", async (req, res) => {
  *     summary: Get procurement data by ID
  *     description: Retrieve procurement data from the database using a unique ID.
  *     tags:
- *       - Procurement
+ *       - Procurements
  *     parameters:
  *       - in: path
  *         name: id
