@@ -6,7 +6,75 @@ const { KGLErrors } = require("../utils/customError.js");
 const router = express.Router();
 
 
-// get all procurement
+/**
+ * @swagger
+ * /api/procurements:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of all users in the system
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: The unique ID of the procurement record
+ *                   produceName:
+ *                     type: string
+ *                     description: The name of the produce
+ *                   produceType:
+ *                     type: string
+ *                     description: The type of the produce
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     description: The date of procurement
+ *                   time:
+ *                     type: string
+ *                     description: The time of procurement
+ *                   tonnage:
+ *                     type: number
+ *                     description: The tonnage of the produce procured
+ *                   cost:
+ *                     type: number
+ *                     description: The cost of the procurement
+ *                   sellingPrice:
+ *                     type: number
+ *                     description: The selling price of the produce
+ *                   dealerName:
+ *                     type: string
+ *                     description: The name of the dealer from whom the produce was procured
+ *                   contact:
+ *                     type: string
+ *                     description: The contact information of the dealer
+ *                   branch:
+ *                     type: string
+ *                     description: The branch where the procurement took place
+ *       404:
+ *         description: No procurement data found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message indicating that no procurement data was found
+ *                 error:
+ *                   type: string
+ *                   description: HTTP status code indicating the error
+ *                 reason:
+ *                   type: string
+ *                   description: Additional information about the error 
+ */
 router.get("/", async (req, res) => {
   try {
     let procurementData = await procurementModel.find({});
@@ -17,7 +85,66 @@ router.get("/", async (req, res) => {
 })
 
 
-// get procurement record by it unique id
+/**
+ * @swagger
+ * /api/procurements/{id}:
+ *   get:
+ *     summary: Get procurement data by ID
+ *     description: Retrieve procurement data from the database using a unique ID.
+ *     tags:
+ *       - Procurement
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: The unique ID of the procurement data to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A single procurement record
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The unique ID of the procurement record
+ *                 produceName:
+ *                   type: string
+ *                   description: The name of the produce
+ *                 produceType:
+ *                   type: string
+ *                   description: The type of the produce
+ *                 date:
+ *                   type: string
+ *                   format: date
+ *                   description: The date of procurement
+ *                 time:
+ *                   type: string
+ *                   description: The time of procurement
+ *                 tonnage:
+ *                   type: number
+ *                   description: The tonnage of the produce procured
+ *                 cost:
+ *                   type: number
+ *                   description: The cost of the procurement
+ *                 sellingPrice:
+ *                   type: number
+ *                   description: The selling price of the produce
+ *                 dealerName:
+ *                   type: string
+ *                   description: The name of the dealer from whom the produce was procured
+ *                 contact:
+ *                   type: string
+ *                   description: The contact information of the dealer
+ *                 branch:
+ *                   type: string
+ *                   description: The branch where the procurement took place
+ *       400:
+ *         description: Invalid ID format
+ */
 router.get("/:id", async (req, res, next) => {
   const id = req.params.id;
 
@@ -39,7 +166,56 @@ router.get("/:id", async (req, res, next) => {
 });
 
 
-// post request for creating a new procurement record
+/**
+ * @swagger
+ * /api/procurements
+ *   post:
+ *     summary: Create new procurement records
+ *     description: Creates a new procurement record in the database with the provided information.
+ *     tags:
+ *       - Procurements
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               _id:
+ *                 type: string
+ *                 description: The unique ID of the procurement record
+ *               produceName:
+ *                 type: string
+ *                 description: The name of the produce
+ *               produceType:
+ *                 type: string
+ *                 description: The type of the produce
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: The date of procurement
+ *               time:
+ *                 type: string
+ *                 description: The time of procurement
+ *               tonnage:
+ *                 type: number
+ *                 description: The tonnage of the produce procured
+ *               cost:
+ *                 type: number
+ *                 description: The cost of the procurement
+ *               sellingPrice:
+ *                 type: number
+ *                 description: The selling price of the produce
+ *               dealerName:
+ *                 type: string
+ *                 description: The name of the dealer from whom the produce was procured
+ *               contact:
+ *                 type: string
+ *                 description: The contact information of the dealer
+ *               branch:
+ *                 type: string
+ *                 description: The branch where the procurement took place
+ */
 router.post("/", async (req, res) => {
   const body = req.body;
 

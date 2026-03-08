@@ -1,4 +1,4 @@
-const authRolesForSales = (...allowedRoles) => {
+const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     try {
       // roles comes from protected middleware
@@ -21,4 +21,4 @@ const authRolesForSales = (...allowedRoles) => {
   }
 }
 
-module.exports = {authRolesForSales};
+module.exports = {authorizeRoles};

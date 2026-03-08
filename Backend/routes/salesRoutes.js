@@ -6,7 +6,43 @@ const {KGLErrors} = require("../utils/customError.js");
 const router = express.Router();
 
 
-// get all sales
+/**
+ * @swagger
+ * /api/sales:
+ *   get:
+ *     summary: Retrieve a list of sales records
+ *     description: Retrieve a list of all sales records from the database.
+ *   tags:
+ *      - Sales
+ *   responses:
+ *     200:
+ *       description: A list of sales records
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 produceName:
+ *                   type: string
+ *                 tonnage:
+ *                   type: number
+ *                 amountPaid:
+ *                   type: number
+ *                 buyerName:
+ *                   type: string
+ *                 salesAgent:
+ *                   type: string
+ *                 dateOfSale:
+ *                   type: string
+ *                 timePurchaseMade:
+ *                   type: string
+ *     404:
+ *       description: An error occurred while fetching sales records
+ */
 router.get("/", async (req, res) => {
   try {
     let sales = await salesModel.find({});
@@ -17,7 +53,46 @@ router.get("/", async (req, res) => {
 });
 
 
-// get a sales record by it unique id
+/**
+ * @swagger
+ * /api/sales/{id}:
+ *   get:
+ *     summary: Retrieve a single sales record by ID
+ *     description: Retrieve a single sales record from the database using its unique ID.
+ *     tags:
+ *       - Sales
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: The unique ID of the sales record to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A single sales record
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 produceName:
+ *                   type: string
+ *                 tonnage:
+ *                   type: string
+ *                 amountPaid:
+ *                   type: number
+ *                 buyerName:
+ *                   type: string
+ *                 salesAgent:
+ *                   type: string
+ *                 dateOfSale:
+ *                   type: string
+ *                 timePurchaseMade:
+ *                   type: string
+ */
 router.get("/:id", async (req, res, next) => {
   let id = req.params.id;
 
@@ -37,7 +112,46 @@ router.get("/:id", async (req, res, next) => {
 })
 
 
-// create a new sale record
+/**
+ * @swagger
+ * /api/sales:
+ *   post:
+ *     summary: Create a new sales record
+ *     description: Create a new sales record in the database.
+ *     tags:
+ *       - Sales
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               _id:
+ *                 type: string
+ *                 description: The unique ID of the sales record (optional, will be generated if not provided)
+ *               produceName:
+ *                 type: string
+ *                 description: The name of the produce sold
+ *               tonnage:
+ *                 type: number
+ *                 description: The tonnage of the produce sold
+ *               amountPaid:
+ *                 type: number
+ *                 description: The amount paid for the sale
+ *               buyerName:
+ *                 type: string
+ *                 description: The name of the buyer
+ *               salesAgent:
+ *                 type: string
+ *                 description: The name of the sales agent
+ *               dateOfSale:
+ *                 type: string
+ *                 description: The date of the sale (in ISO format)
+ *               timePurchaseMade:
+ *                 type: string
+ *                 description: The time the purchase was made (in HH:mm format)
+ */
 router.post("/", async (req, res, next) => {
   let body = req.body;
 

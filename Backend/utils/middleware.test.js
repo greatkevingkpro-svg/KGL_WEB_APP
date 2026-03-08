@@ -2,7 +2,7 @@
 const request = require("supertest");
 // const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware.js");
-const { authRolesForSales } = require("../middleware/salesAuth.js");
+const { authorizeRoles } = require("../middleware/salesAuth.js");
 const jwt = require("jsonwebtoken");
 
 require("dotenv").config(); // make sure JWT_SECRET_KEY is loaded
@@ -51,7 +51,7 @@ describe("authMiddleware unit tests", () => {
 
 
 // Only "sales" role is allowed
-describe("authRolesForSales unit tests", () => {
+describe("authorizeRoles unit tests", () => {
   let req, res, next;
 
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe("authRolesForSales unit tests", () => {
   });
 
   it("should deny access if role not allowed", () => {
-    const middleware = authRolesForSales("sales");
+    const middleware = authorizeRoles("sales");
     middleware(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(403);
@@ -74,7 +74,7 @@ describe("authRolesForSales unit tests", () => {
 
   it("should allow access if role is allowed", () => {
     req.user.role = "sales";
-    const middleware = authRolesForSales("sales");
+    const middleware = authorizeRoles("sales");
     middleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
