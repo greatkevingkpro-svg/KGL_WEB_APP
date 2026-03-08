@@ -168,7 +168,7 @@ router.get("/:id", async (req, res, next) => {
 
 /**
  * @swagger
- * /api/procurements
+ * /api/procurements:
  *   post:
  *     summary: Create new procurement records
  *     description: Creates a new procurement record in the database with the provided information.
