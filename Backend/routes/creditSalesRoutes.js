@@ -1,5 +1,6 @@
 const express = require("express");
 const { creditSalesModel } = require("../models/CreditSalesModels.js");
+const { stockModel } = require("../models/stockModel.js")
 const { KGLErrors } = require("../utils/customError.js");
 
 // create routers for credit sales
@@ -201,14 +202,29 @@ router.get("/:id", async (req, res, next) => {
  *                 description: The dispatch date for the credit sale record.
  */
 router.post("/", async (req, res, next) => {
-  let body = req.body;
-
   try {
-    let creditSales = new creditSalesModel(body);
+    const body = req.body;
+    const { produceName, branch, tonnage } = body;
 
+    // Check Store availability
+    const stock = await stockModel.findOne({ produceName, branch });
+    if (!stock || stock.tonnage < tonnage) {
+      return res.status(400).json({ 
+        message: `Insufficient stock for credit at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.` 
+      });
+    }
+
+    // Record the Credit Sale using my creditSalesModel
+    let creditSales = new creditSalesModel(body);
     const savedcreditSales = await creditSales.save()
+
+    // Decrease Stock Tonnage physically
+    await stockModel.findOneAndUpdate(
+      { produceName, branch },
+      { $inc: { tonnage: -tonnage } }
+    );
       
-    res.status(201).json({message: "credit Sale record created successfully", data: savedcreditSales})
+    res.status(201).json({message: "Credit sale successful. Produce removed from store.", data: savedcreditSales})
 
   } catch (error) {
     console.error("Error saving credit sales:", error);

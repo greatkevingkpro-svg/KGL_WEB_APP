@@ -1,5 +1,6 @@
 const express = require("express");
 const { procurementModel } = require("../models/ProcModels.js");
+const { stockModel } = require("../models/stockModel.js");
 const { KGLErrors } = require("../utils/customError.js");
 
 // create routers for procurement
@@ -148,14 +149,14 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res, next) => {
   const id = req.params.id;
 
-  if(id.length < 5) {
+  if (id.length < 5) {
     next(new KGLErrors("Invalid ID format", 400, "ID must be at least 5 characters long"));
   }
 
   try {
-    let procurementData = await procurementModel.findById({_id: id});
+    let procurementData = await procurementModel.findById({ _id: id });
 
-    if(!procurementData) {
+    if (!procurementData) {
       next(new KGLErrors("Procurement data not found", 404, `No procurement data found with ID: ${id}`));
     } else {
       res.status(200).json(procurementData);
@@ -217,15 +218,31 @@ router.get("/:id", async (req, res, next) => {
  *                 description: The branch where the procurement took place
  */
 router.post("/", async (req, res, next) => {
-  const body = req.body;
 
   try {
-    const procurement = new procurementModel(body);
+    const body = req.body;
+    const { produceName, branch, tonnage, sellingPrice } = body;
 
+    // 1. Save the procurement entry
+    const procurement = new procurementModel(body);
     const savedProcurement = await procurement.save();
 
-    res.status(201).json({ message: "Procurement saved successfully", data: savedProcurement });
+    // 2. Update the Store (Stock Model) using destructured variables
+    // $inc adds the new weight to existing stock.
+    // $set updates the 'price per kg' to the latest market rate.
+    await stockModel.findOneAndUpdate(
+      { produceName, branch },
+      {
+        $inc: { tonnage: tonnage },
+        $set: { sellingPrice: sellingPrice }
+      },
+      { upsert: true, new: true }
+    );
 
+    res.status(201).json({
+      message: "Procurement recorded. Stock tonnage increased and unit price updated.",
+      data: savedProcurement
+    });
   } catch (error) {
     console.error("Error saving procurement:", error);
     res.status(500).json({ message: "There was an error saving procurement data", error: error.message });
@@ -233,4 +250,4 @@ router.post("/", async (req, res, next) => {
 });
 
 
-module.exports = {router};
+module.exports = { router };

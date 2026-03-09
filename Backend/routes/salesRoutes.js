@@ -1,6 +1,7 @@
 const express = require("express");
-const {salesModel} = require("../models/SalesModels.js");
-const {KGLErrors} = require("../utils/customError.js");
+const { salesModel } = require("../models/SalesModels.js");
+const { stockModel } = require("../models/stockModel.js")
+const { KGLErrors } = require("../utils/customError.js");
 
 // create routers for sales
 const router = express.Router();
@@ -96,10 +97,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res, next) => {
   let id = req.params.id;
 
-  if(id.length < 5) {
+  if (id.length < 5) {
     next(new KGLErrors("invvalid id signature", 400));
   }
-  
+
   try {
     let sales = await salesModel.find({ _id: id });
     if (!sales) {
@@ -153,15 +154,33 @@ router.get("/:id", async (req, res, next) => {
  *                 description: The time the purchase was made (in HH:mm format)
  */
 router.post("/", async (req, res, next) => {
-  let body = req.body;
-
   try {
-    let sales = new salesModel(body);
+    const body = req.body;
+    const { produceName, branch, tonnage } = body;
 
+    // Availability Check: Ensure store has enough produce
+    const stock = await stockModel.findOne({ produceName, branch });
+    if (!stock || stock.tonnage < tonnage) {
+      return res.status(400).json({ 
+        message: `Insufficient stock at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.` 
+      });
+    }
+
+    // Record Sale using salesModel
+    const sales = new salesModel(body);
     const savedSales = await sales.save()
-    
-    res.status(201).json({ message: "Sale saved successfully", data: savedSales });
-    
+
+    // Decrease Stock Tonnage physically
+    await stockModel.findOneAndUpdate(
+      { produceName, branch },
+      { $inc: { tonnage: -tonnage } }
+    );
+
+    res.status(201).json({ 
+      message: "sale recoreded successful. Produce removed from store.", 
+      data: savedSales 
+    });
+
   } catch (error) {
     console.error("Error saving sales:", error);
     res.status(500).json({ message: "There was an error saving sales data", error: error.message });
@@ -169,4 +188,4 @@ router.post("/", async (req, res, next) => {
 })
 
 
-module.exports = {router};
+module.exports = { router };

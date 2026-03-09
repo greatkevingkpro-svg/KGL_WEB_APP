@@ -25,6 +25,13 @@ const { protectedRouter } = require("./middleware/protectedRouter.js")
 
 const app = express();
 
+
+// allow all origins
+app.use(cors());
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // swagger definition
 const swaggerDefinition = {
 	openapi: "3.0.0",
@@ -60,11 +67,7 @@ const swaggerSpec = swaggerJSDoc(options);
 // setup swagger UI
 app.use("/KGL_API_DOCS", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// allow all origins
-app.use(cors());
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 
 
 // get request to the homepage
