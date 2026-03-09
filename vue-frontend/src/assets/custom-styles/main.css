@@ -21,10 +21,11 @@ body {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: rgb(250, 252, 241); /* same as body so it blends */
+  background-color: rgb(250, 252, 241);
+  /* same as body so it blends */
   border-radius: 8px;
   height: 60px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 a svg {
@@ -49,21 +50,22 @@ a svg {
   padding: 20px;
   border-radius: 12px;
   border: none;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chart-card {
   background: rgb(250, 252, 241);
   border-radius: 12px;
   border: none;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1)
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1)
 }
 
-.table thead{
+.table thead {
   background-color: green;
 }
 
-.card-header, #submitBtn {
+.card-header,
+#submitBtn {
   background: rgb(12, 146, 12);
 }
 
@@ -115,3 +117,9 @@ a svg {
     /* just below sidebar */
   }
 }
+
+
+/* .password-hidden {
+  -webkit-text-security: disc !important;
+  text-security: disc !important;
+} */

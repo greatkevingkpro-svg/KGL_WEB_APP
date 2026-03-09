@@ -12,7 +12,7 @@ export const useUserInfoStore = defineStore("users",()=> {
         isLoading.value = true
         try {
             const response = await axios.get("/api/users")
-            users.value = response.data
+            users.value = response.data.data
         } catch (error) {
             console.log(error)
         } finally {
@@ -22,14 +22,34 @@ export const useUserInfoStore = defineStore("users",()=> {
 
     }
 
+
+    const currentUser = ref(null);
+
+    // NEW: Fetch a single user by ID
+    async function fetchUserById(userId) {
+        isLoading.value = true
+        try {
+            const response = await axios.get(`/api/users/${userId}`)
+            currentUser.value = response.data.data
+            return response.data.data // Return data so you can use it in a form
+        } catch (error) {
+            console.error("Error fetching user:", error)
+            return null
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
         users,
+        currentUser,
         isLoading, 
         fetchUserRecords,
+        fetchUserById
     }
 })
 
-export const usePostUserStore = defineStore("users",()=> {
+export const usePostUserStore = defineStore("postUsers",()=> {
     const postUser = ref([]);
     const error = ref(null);
 
@@ -52,12 +72,66 @@ export const usePostUserStore = defineStore("users",()=> {
         }
     }
 
+     // NEW: Update existing user
+    async function patchUser(userId, userData) {
+        try {
+            // Create a copy to avoid mutating the original form
+            const updateData = { ...userData };
+            
+            // Remove password so we don't accidentally overwrite the hashed one with an empty string
+            delete updateData.password; 
+
+            const response = await axios.patch(`/api/users/${userId}`, updateData);
+            
+            alert("User updated successfully!");
+            return response.data;
+        } catch (err) {
+            console.error("Update error:", err);
+            throw err; // Let the component handle the error display
+        }
+    }
+
     return {
         postUser,
         error,
-        recordNewUser
+        recordNewUser,
+        patchUser
     }
 },
 {
     persist: true
+});
+
+
+
+export const useDeleteUserStore = defineStore("delete-user", () => {
+    const isLoading = ref(false);
+    const error = ref(null);
+
+    async function deleteUser(userId) {
+        // Confirmation before deleting is usually a good idea
+        if (!confirm("Are you sure you want to delete this user?")) return;
+
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            await axios.delete(`/api/users/${userId}`);
+            
+            alert("User deleted successfully");
+            return true; // Return true so the component knows to refresh the list
+        } catch (err) {
+            error.value = err.response?.data?.message || "Failed to delete user";
+            console.error("Delete Error:", err);
+            return false;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    return {
+        deleteUser,
+        isLoading,
+        error
+    };
 });

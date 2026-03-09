@@ -14,6 +14,18 @@ import creditSales from '@/views/creditSales.vue';
 import salesHistory from '@/views/salesHistory.vue';
 import creditHistory from '@/views/creditHistory.vue';
 
+
+// <!-- Use type="text" to trick Chrome, but use CSS to hide the dots -->
+// <input type="text" class="form-control password-hidden" v-model="form.password">
+
+// .password-hidden {
+//     /* This makes text appear as dots/discs exactly like a password field */
+//     -webkit-text-security: disc; 
+//     text-security: disc; /* Support for other browsers */
+// }
+
+
+
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
@@ -91,5 +103,15 @@ const router = createRouter({
 		},
 	],
 })
+
+router.beforeEach((to, from) => {
+ // Force remove any leftover modal parts
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    
+	return true;
+});
 
 export default router

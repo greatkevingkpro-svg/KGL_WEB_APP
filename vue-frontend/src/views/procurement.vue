@@ -26,6 +26,19 @@ async function submitProcurement() {
   try {
     isLoading.value = true;
     await procurementStore.recordNewProcurement(form);
+
+    Object.assign(form, {
+      produceName: "",
+      produceType: "",
+      date: "",
+      time: "",
+      tonnage: "",
+      cost: "",
+      sellingPrice: "",
+      dealerName: "",
+      contact: "",
+      branch: ""
+    })
   } catch (error) {
     console.log(error)
   } finally {

@@ -135,7 +135,7 @@ onMounted(() => {
             <h6 class="mb-3">Recent Sales</h6>
 
             <div class="table-responsive">
-                <table class="table table-success table-hover">
+                <table class="table table-striped table-success table-hover">
                     <thead>
                         <tr>
                             <th>Produce</th>
