@@ -60,7 +60,7 @@ const router = express.Router();
  *                     type: date
  *                     description: The dispatch date for the credit sale record.
  */
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     let creditSales = await creditSalesModel.find({});
     res.status(200).json(creditSales)
