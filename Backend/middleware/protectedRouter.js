@@ -48,7 +48,7 @@ protectedRouter.get(
   authorizeRoles("manager", "sales agent"),
   async (req, res) => {
     try {
-      const newCreditSale = await creditSalesModel.create(req.body);
+      const newCreditSale = await creditSalesModel.find();
       res.status(201).json({
         message: "credit Sale fetched successfully",
         data: newCreditSale
@@ -83,7 +83,7 @@ protectedRouter.post(
   authorizeRoles("manager"),
   async (req, res) => {
     try {
-      const newPorcurements = await procurementModel.find();
+      const newPorcurements = await procurementModel.create(req.body);
 
       res.status(200).json({
         message: "porcurements created successfully",
