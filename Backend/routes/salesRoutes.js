@@ -162,7 +162,7 @@ router.post("/", async (req, res, next) => {
     // Availability Check: Ensure store has enough produce
     const stock = await stockModel.findOne({
       produceName: { $regex: new RegExp(`^${produceName.trim()}$`, 'i') },
-      branch: branch.trim()
+      branch: { $regex: new RegExp(`^${branch.trim()}$`, 'i') }
     });
 
     if (!stock || stock.tonnage < tonnage) {
@@ -185,7 +185,7 @@ router.post("/", async (req, res, next) => {
       {
         // This regex makes "beans" match "Beans"
         produceName: { $regex: new RegExp(`^${cleanName}$`, 'i') },
-        branch: cleanBranch
+        branch: { $regex: new RegExp(`^${cleanBranch}$`, 'i') }
       },
       { $inc: { tonnage: -amountToSubtract } },
       { new: true } // 'new: true' is the Mongoose way for 'returnDocument: after'

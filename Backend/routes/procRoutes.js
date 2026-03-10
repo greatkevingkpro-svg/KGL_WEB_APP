@@ -218,34 +218,42 @@ router.get("/:id", async (req, res, next) => {
  *                 description: The branch where the procurement took place
  */
 router.post("/", async (req, res, next) => {
-
   try {
-    const body = req.body;
+    const body = req.body
     const { produceName, branch, tonnage, sellingPrice } = body;
 
-    // 1. Save the procurement entry
-    const procurement = new procurementModel(body);
+    // CRITICAL FIX: Convert strings to actual numbers
+    const numericTonnage = Number(tonnage);
+    const numericPrice = Number(sellingPrice);
+
+    const procurement = new procurementModel({
+      ...req.body,
+      tonnage: numericTonnage,
+      sellingPrice: numericPrice
+    });
     const savedProcurement = await procurement.save();
 
-    // 2. Update the Store (Stock Model) using destructured variables
-    // $inc adds the new weight to existing stock.
-    // $set updates the 'price per kg' to the latest market rate.
-    await stockModel.findOneAndUpdate(
-      { produceName: produceName.trim(), branch: branch.trim() },
-      {
-        $inc: { tonnage: tonnage },
-        $set: { sellingPrice: sellingPrice }
+    const updatedStock = await stockModel.findOneAndUpdate(
+      { 
+        produceName: { $regex: new RegExp(`^${produceName.trim()}$`, 'i') },
+        branch: { $regex: new RegExp(`^${branch.trim()}$`, 'i') }
       },
-      { upsert: true, returnDocument: 'after' }
+      {
+        $inc: { tonnage: numericTonnage }, // Use the converted number
+        $set: { sellingPrice: numericPrice } // Use the converted number
+      },
+      { upsert: true, new: true } // 'new: true' is safer for Mongoose
     );
 
+    console.log("STOCK UPDATED TO:", updatedStock.tonnage); // Debug log
+
     res.status(201).json({
-      message: "Procurement recorded. Stock tonnage increased and unit price updated.",
+      message: "Stock updated successfully",
       data: savedProcurement
     });
   } catch (error) {
-    console.error("Error saving procurement:", error);
-    res.status(500).json({ message: "There was an error saving procurement data", error: error.message });
+    console.error("Procurement Error:", error);
+    res.status(500).json({ message: error.message });
   }
 });
 
