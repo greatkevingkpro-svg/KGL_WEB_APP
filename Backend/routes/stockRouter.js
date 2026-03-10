@@ -24,7 +24,11 @@ router.get("/", async (req, res) => {
 router.get("/:branch/:produceName", async (req, res) => {
   try {
     const { branch, produceName } = req.params;
-    const stock = await stockModel.findOne({ branch, produceName });
+    const stock = await stockModel.findOne({ 
+        branch: req.params.branch, 
+        produceName: req.params.produceName 
+    });
+    
     if (!stock) {
       return res.status(404).json({ message: "Produce not found in this branch" });
     }

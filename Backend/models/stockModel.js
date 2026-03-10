@@ -16,6 +16,9 @@ const stockSchema = new mongoose.Schema({
   sellingPrice: { type: Number, default: 0 } // Price per 1kg
 }, { timestamps: true });
 
+// Ensure unique produce per branch to prevent duplicate rows
+stockSchema.index({ produceName: 1, branch: 1 }, { unique: true });
+
 const stockModel = mongoose.model("stocks", stockSchema);
 
 module.exports = {stockModel};

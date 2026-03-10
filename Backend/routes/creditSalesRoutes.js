@@ -205,9 +205,14 @@ router.post("/", async (req, res, next) => {
   try {
     const body = req.body;
     const { produceName, branch, tonnage } = body;
+    const amountToSubtract = Number(tonnage);
 
     // Check Store availability
-    const stock = await stockModel.findOne({ produceName, branch });
+    const stock = await stockModel.findOne({
+      produceName: produceName.trim(),
+      branch: branch.trim()
+    });
+
     if (!stock || stock.tonnage < tonnage) {
       return res.status(400).json({ 
         message: `Insufficient stock for credit at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.` 
@@ -219,10 +224,16 @@ router.post("/", async (req, res, next) => {
     const savedcreditSales = await creditSales.save()
 
     // Decrease Stock Tonnage physically
-    await stockModel.findOneAndUpdate(
-      { produceName, branch },
-      { $inc: { tonnage: -tonnage } }
+    const updatedStock = await stockModel.findOneAndUpdate(
+      { produceName: produceName.trim(), branch: branch.trim() },
+      { $inc: { tonnage: -amountToSubtract } },
+      { returnDocument: 'after' }
     );
+
+    if (!updatedStock) {
+      console.error("FAILED TO UPDATE STOCK: No matching record found.");
+      return res.status(500).json({ message: "Database error: Could not find stock to decrement." });
+    }
       
     res.status(201).json({message: "Credit sale successful. Produce removed from store.", data: savedcreditSales})
 

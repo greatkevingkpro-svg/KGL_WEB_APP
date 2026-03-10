@@ -231,12 +231,12 @@ router.post("/", async (req, res, next) => {
     // $inc adds the new weight to existing stock.
     // $set updates the 'price per kg' to the latest market rate.
     await stockModel.findOneAndUpdate(
-      { produceName, branch },
+      { produceName: produceName.trim(), branch: branch.trim() },
       {
         $inc: { tonnage: tonnage },
         $set: { sellingPrice: sellingPrice }
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     res.status(201).json({
