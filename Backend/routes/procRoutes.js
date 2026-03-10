@@ -219,43 +219,48 @@ router.get("/:id", async (req, res, next) => {
  */
 router.post("/", async (req, res, next) => {
   try {
-    const body = req.body
-    const { produceName, branch, tonnage, sellingPrice } = body;
+    const { produceName, branch, tonnage, sellingPrice } = req.body;
 
-    // CRITICAL FIX: Convert strings to actual numbers
+    // 1. NORMALIZE: Always store as Trimmed and TitleCase (or Lowercase)
+    const cleanName = produceName.trim(); 
+    const cleanBranch = branch.trim();
     const numericTonnage = Number(tonnage);
     const numericPrice = Number(sellingPrice);
 
+    // 2. Save Procurement record
     const procurement = new procurementModel({
       ...req.body,
+      produceName: cleanName,
+      branch: cleanBranch,
       tonnage: numericTonnage,
       sellingPrice: numericPrice
     });
     const savedProcurement = await procurement.save();
 
+    // 3. Update Stock (NO REGEX HERE)
     const updatedStock = await stockModel.findOneAndUpdate(
       { 
-        produceName: { $regex: new RegExp(`^${produceName.trim()}$`, 'i') },
-        branch: { $regex: new RegExp(`^${branch.trim()}$`, 'i') }
+        produceName: cleanName, // Exact match only
+        branch: cleanBranch 
       },
       {
-        $inc: { tonnage: numericTonnage }, // Use the converted number
-        $set: { sellingPrice: numericPrice } // Use the converted number
+        $inc: { tonnage: numericTonnage },
+        $set: { sellingPrice: numericPrice }
       },
-      { upsert: true, new: true } // 'new: true' is safer for Mongoose
+      { upsert: true, new: true } // This will now work perfectly
     );
-
-    console.log("STOCK UPDATED TO:", updatedStock.tonnage); // Debug log
 
     res.status(201).json({
       message: "Stock updated successfully",
-      data: savedProcurement
+      data: savedProcurement,
+      currentStock: updatedStock.tonnage
     });
   } catch (error) {
     console.error("Procurement Error:", error);
     res.status(500).json({ message: error.message });
   }
 });
+
 
 
 module.exports = { router };
