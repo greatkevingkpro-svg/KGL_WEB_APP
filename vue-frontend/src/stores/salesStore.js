@@ -16,12 +16,11 @@ export const useSalesStore = defineStore("sales",
 
                 // add new sales to the list
                 sales.value.push(response.data);
-
-                alert("New sale created successful")
+                
                 return response.data;
             } catch (err) {
                 error.value = err.response?.data?.message || err.message;
-                console.log(err);
+                throw err; 
             }
         }
 

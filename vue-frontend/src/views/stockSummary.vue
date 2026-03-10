@@ -3,9 +3,12 @@
 import "../assets/custom-styles/main.css";
 
 import { onMounted, computed } from "vue";
+import { storeToRefs } from "pinia";
 import { useStockBranchStore } from "@/stores/stockBranchStore";
 
 const branchesStock = useStockBranchStore();
+
+const { allBranchStock, isLoading } = storeToRefs(branchesStock);
 
 onMounted(() => {
     branchesStock.fetchStockForAllBranches();
@@ -14,19 +17,20 @@ onMounted(() => {
 // 1. Create computed properties for each branch
 // Change "Maganjo" and "Matugga" to match exactly what is in database 'branch' field
 const maganjoData = computed(() => {
-    if (!branchesStock.allBranchStock) {
-        return [];
-    }
+    // Safety check: ensure we are filtering an array
+    const dataArray = Array.isArray(allBranchStock.value) ? allBranchStock.value : [];
 
-    return branchesStock.allBranchStock.filter(item => item.branch === 'Maganjo');
+    return branchesStock.getStockByBranch('Maganjo');
 });
 
 const matuggaData = computed(() => {
-    if (!branchesStock.allBranchStock) {
-        return [];
-    }
+    // if (!branchesStock.allBranchStock) {
+    //     return [];
+    // }
+    // Safety check: ensure we are filtering an array
+    const dataArray = Array.isArray(allBranchStock.value) ? allBranchStock.value : [];
 
-    return branchesStock.allBranchStock.filter(item => item.branch === 'Matugga');
+    return branchesStock.getStockByBranch('Matugga');
 });
 
 const getStatus = (tonnage) => {
@@ -36,9 +40,7 @@ const getStatus = (tonnage) => {
         return { label: 'Low Stock', class: 'bg-warning text-dark' };
     } else {
         // 1000 or above
-        return { label: 'Available', class: 'bg-success text-white' }; // Usually Available is green (success)
-        // If you specifically want danger for "Available" as requested:
-        // return { label: 'Available', class: 'bg-danger text-white' }; 
+        return { label: 'Available', class: 'bg-success text-white' }; 
     }
 };
 
@@ -56,19 +58,17 @@ const getStatus = (tonnage) => {
             <thead>
                 <tr>
                     <th>Produce</th>
-                    <th>Type</th>
                     <th>Tonnage</th>
-                    <th>Cost</th>
                     <th>Price</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in maganjoData" :key="item.id">
+                <tr v-for="item in maganjoData" :key="item._id">
                     <td>{{ item.produceName }}</td>
-                    <td>{{ item.produceType }}</td>
+
                     <td>{{ item.tonnage }}</td>
-                    <td>{{ item.cost }}</td>
+
                     <td>{{ item.sellingPrice }}</td>
                     <td>
                         <!-- Dynamic Status Badge -->
@@ -78,14 +78,14 @@ const getStatus = (tonnage) => {
                     </td>
                 </tr>
                 <tr v-if="branchesStock.isLoading">
-                    <td colspan="6" class="text-center">
+                    <td colspan="4" class="text-center">
                         <div class="spinner-border text-success" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </td>
                 </tr>
                 <tr v-if="maganjoData.length === 0 && !branchesStock.isLoading">
-                    <td colspan="6" class="text-center">No stock found for Maganjo.</td>
+                    <td colspan="4" class="text-center">No stock found for Maganjo.</td>
                 </tr>
             </tbody>
         </table>
@@ -100,19 +100,19 @@ const getStatus = (tonnage) => {
             <thead>
                 <tr>
                     <th>Produce</th>
-                    <th>Type</th>
+
                     <th>Tonnage</th>
-                    <th>Cost</th>
+
                     <th>Price</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody id="usersTableBody">
-                <tr v-for="item in matuggaData" :key="item.id">
+                <tr v-for="item in matuggaData" :key="item._id">
                     <td>{{ item.produceName }}</td>
-                    <td>{{ item.produceType }}</td>
+
                     <td>{{ item.tonnage }}</td>
-                    <td>{{ item.cost }}</td>
+
                     <td>{{ item.sellingPrice }}</td>
                     <td>
                         <!-- Dynamic Status Badge -->
@@ -122,14 +122,14 @@ const getStatus = (tonnage) => {
                     </td>
                 </tr>
                 <tr v-if="branchesStock.isLoading">
-                    <td colspan="6" class="text-center">
+                    <td colspan="4" class="text-center">
                         <div class="spinner-border text-success" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </td>
                 </tr>
                 <tr v-if="matuggaData.length === 0 && !branchesStock.isLoading">
-                    <td colspan="6" class="text-center">No stock found for Matugga.</td>
+                    <td colspan="4" class="text-center">No stock found for Matugga.</td>
                 </tr>
             </tbody>
         </table>

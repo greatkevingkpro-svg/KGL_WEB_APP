@@ -1,7 +1,24 @@
 <script setup>
 
 import "../assets/custom-styles/main.css"
-import { reactive, ref, onMounted, onUnmounted } from "vue";
+import { useUserStore } from "../stores/userStore.js"
+import { useRouter } from "vue-router";
+import { reactive, ref, onMounted, onUnmounted, watchEffect, watch } from "vue";
+
+const userStore = useUserStore();
+const router = useRouter();
+
+watchEffect(() => {
+    if (!userStore.user.token) {
+        router.push("/login")
+    }
+})
+
+watch(() => router.path, () => {
+    if (window.innerWidth < 768) {
+        closeSidebar();
+    }
+});
 
 
 const activeLink = ref("dashboard")
@@ -19,9 +36,13 @@ function closeSidebar() {
     sidebarOpen.value = false
 }
 
+// 2. Updated resize logic
 function checkWindowSize() {
     if (window.innerWidth < 768) {
-        sidebarOpen.value = false
+        sidebarOpen.value = false;
+    } else {
+        // Optional: keep it open on desktop
+        sidebarOpen.value = true;
     }
 }
 
@@ -34,19 +55,36 @@ onUnmounted(() => {
     window.removeEventListener("resize", checkWindowSize)
 })
 
+async function handleLogout() {
+    // 1. Ask for confirmation (optional but recommended)
+    if (confirm("Are you sure you want to logout?")) {
+        // 2. Clear the store
+        userStore.logout();
+        
+        // 3. Redirect to login
+        router.push("/login");
+        
+        // 4. Force a clean state (optional)
+        // window.location.reload(); 
+    }
+}
+
 </script>
 
 <template>
 
     <div class="d-flex">
+        <!-- In your template -->
+        <div v-if="sidebarOpen" class="d-md-none" id="sidebarOverlay" @click="closeSidebar"></div>
 
         <!-- SIDEBAR -->
         <div class="sidebar p-3" :class="{ open: sidebarOpen }">
             <h4 class="text-white mb-4">KGL System</h4>
 
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <router-link to="/dashboard/director" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="userStore.user.role === 'director'" @click="closeSidebar" class="nav-item">
+                    <router-link to="/dashboard/director" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,19 +94,22 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/roleDashboard" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'sales agent'].includes(userStore.user.role)" @click="closeSidebar"
+                    class="nav-item">
+                    <router-link to="/dashboard/roleDashboard" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
                         </svg>
-                        2 Dashboard
+                        Dashboard
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/total-sales" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="userStore.user.role === 'director'" @click="closeSidebar" class="nav-item">
+                    <router-link to="/dashboard/total-sales" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -79,8 +120,9 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/stock-summary" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="userStore.user.role === 'director'" @click="closeSidebar" class="nav-item">
+                    <router-link to="/dashboard/stock-summary" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -91,8 +133,9 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/report" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="userStore.user.role === 'director'" @click="closeSidebar" class="nav-item">
+                    <router-link to="/dashboard/report" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -102,8 +145,10 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/stock-branch" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'sales agent'].includes(userStore.user.role)" @click="closeSidebar"
+                    class="nav-item">
+                    <router-link to="/dashboard/stock-branch" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -113,8 +158,9 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/produce" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="userStore.user.role === 'manager'" @click="closeSidebar" class="nav-item">
+                    <router-link to="/dashboard/produce" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -124,8 +170,10 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/sales" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'sales agent'].includes(userStore.user.role)" @click="closeSidebar"
+                    class="nav-item">
+                    <router-link to="/dashboard/sales" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,8 +183,10 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/credit-sales" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'sales agent'].includes(userStore.user.role)" @click="closeSidebar"
+                    class="nav-item">
+                    <router-link to="/dashboard/credit-sales" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -146,8 +196,10 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/sales-branch" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'sales agent'].includes(userStore.user.role)" @click="closeSidebar"
+                    class="nav-item">
+                    <router-link to="/dashboard/sales-branch" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -157,8 +209,10 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/credit-branch" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'sales agent'].includes(userStore.user.role)" @click="closeSidebar"
+                    class="nav-item">
+                    <router-link to="/dashboard/credit-branch" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -168,8 +222,9 @@ onUnmounted(() => {
                     </router-link>
                 </li>
 
-                <li class="nav-item">
-                    <router-link to="/dashboard/user" class="nav-link d-flex align-items-center" exact-active-class="active">
+                <li v-if="['manager', 'director'].includes(userStore.user.role)" @click="closeSidebar" class="nav-item">
+                    <router-link to="/dashboard/user" class="nav-link d-flex align-items-center"
+                        exact-active-class="active">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -190,17 +245,14 @@ onUnmounted(() => {
                     ☰ Menu
                 </button>
 
-                <div id="sidebarOverlay" 
-                :class="{ open: sidebarOpen }"
-                v-if="sidebarOpen" 
-                @click="closeSidebar">
+                <div id="sidebarOverlay" :class="{ open: sidebarOpen }" v-if="sidebarOpen" @click="closeSidebar">
                 </div>
 
                 <!-- TOP BAR -->
                 <div class="top-bar d-flex align-items-center justify-content-between p-2 rounded flex-grow-1 ms-2">
                     <span class="text-success">Logged in as: <strong>Kevin</strong></span>
 
-                    <button id="logoutBtn" class="btn btn-danger d-flex align-items-center gap-2">
+                    <button id="logoutBtn" class="btn btn-danger d-flex align-items-center gap-2" @click="handleLogout">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" width="18" height="18">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -211,7 +263,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <RouterView/>
+            <RouterView />
         </div>
     </div>
 

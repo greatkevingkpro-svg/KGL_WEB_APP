@@ -18,12 +18,10 @@ export const useCreditSalesStore = defineStore("credit-sales",
                 // add new credit sale to the list
                 creditSales.value.push(response.data);
 
-                alert("New Credit Sale created successful")
-
                 return response.data;
             } catch (err) {
                 error.value = err.response?.data?.message || err.message;
-                console.log(err)
+                throw err;
             }
         }
 

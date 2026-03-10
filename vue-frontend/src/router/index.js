@@ -13,16 +13,11 @@ import sales from '@/views/sales.vue';
 import creditSales from '@/views/creditSales.vue';
 import salesHistory from '@/views/salesHistory.vue';
 import creditHistory from '@/views/creditHistory.vue';
+import { useUserStore } from '@/stores/userStore';
 
 
-// <!-- Use type="text" to trick Chrome, but use CSS to hide the dots -->
-// <input type="text" class="form-control password-hidden" v-model="form.password">
 
-// .password-hidden {
-//     /* This makes text appear as dots/discs exactly like a password field */
-//     -webkit-text-security: disc; 
-//     text-security: disc; /* Support for other browsers */
-// }
+
 
 
 
@@ -105,13 +100,54 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
- // Force remove any leftover modal parts
+    // 1. Cleanup Modals (Keep this outside the return)
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
     document.body.classList.remove('modal-open');
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
-    
-	return true;
+
+    const userStore = useUserStore();
+    const user = userStore.user;
+
+
+    // 2. Public Access
+    if (to.path === '/login') return true; // Instead of next()
+
+	// 2. CRITICAL: If no token, they CANNOT enter any other page
+    if (!user || !user.token) {
+        return '/login'; 
+    }
+
+    // 3. Auth Check
+    if (!user || !user.role) return '/login'; // Instead of next('/login')
+
+    const bank = [
+        { role: "director", routes: ["/dashboard/director","/dashboard/total-sales","/dashboard/stock-summary", "/dashboard/report", "/dashboard/user"] },
+        { role: "manager", routes: ["/dashboard/roleDashboard","/dashboard/stock-branch", "/dashboard/produce", "/dashboard/sales", "/dashboard/credit-sales", "/dashboard/sales-branch", "/dashboard/credit-branch", "/dashboard/user"] },
+        { role: "sales agent", routes: ["/dashboard/roleDashboard","/dashboard/stock-branch", "/dashboard/sales", "/dashboard/credit-sales", "/dashboard/sales-branch", "/dashboard/credit-branch"] }
+    ];
+
+    const userRole = user.role.toLowerCase();
+    const roleConfig = bank.find(i => i.role === userRole);
+
+    // 5. Permission Check
+    if (roleConfig && roleConfig.routes.includes(to.path)) {
+        return true; // Authorized
+    } else {
+        console.warn(`Denied: ${userRole} tried to access ${to.path}`);
+        return '/login'; // Unauthorized
+    }
 });
+
+
+// router.beforeEach((to, from) => {
+//     const userStore = useUserStore();
+    
+//     // If they aren't on /login and have no token, kick them out
+//     if (to.path !== '/login' && !userStore.user.token) {
+//         return '/login';
+//     }
+    
+//     return true;
+// });
+
 
 export default router

@@ -1,10 +1,16 @@
 <script setup>
 import "../assets/custom-styles/main.css";
 
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
+import axios from "../utils/axios";
 import { useCreditSalesStore } from "../stores/creditSalesStore";
+import { useUserStore } from "@/stores/userStore";
+import { useStockBranchStore } from "@/stores/stockBranchStore";
+import { toast } from "vue3-toastify";
 
 const creditSalesStore = useCreditSalesStore();
+const userStore = useUserStore();
+const stockStore = useStockBranchStore();
 
 const form = reactive({
 	buyerName: "",
@@ -13,35 +19,65 @@ const form = reactive({
 	contact: "",
 	produceName: "",
 	tonnage: "",
-	dispatchDate: "",
-	time: "",
+	dispatchDate: new Date().toISOString().slice(0, 10),
+	time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
 	amountDue: "",
 	dueDate: "",
-	salesAgent: "",
-	branch: ""
+	salesAgent: userStore.user.name || "",
+	branch: userStore.user.branch || ""
 })
 
 const isLoading = ref(false);
+const unitPrice = ref(0);
+const availableStock = ref(null);
+
+watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) => {
+    if (newName && newBranch) {
+        try {
+            const response = await axios.get(`/api/stocks/${newBranch}/${newName}`);
+            if (response.data) {
+                unitPrice.value = response.data.sellingPrice;
+                availableStock.value = response.data.tonnage;
+                if (form.tonnage) form.amountDue = form.tonnage * unitPrice.value;
+            }
+        } catch (error) {
+            unitPrice.value = 0;
+            availableStock.value = null;
+        }
+    }
+});
+
+
+watch(() => form.tonnage, (newTonnage) => {
+    if (unitPrice.value > 0) form.amountDue = newTonnage * unitPrice.value;
+});
+
 
 async function submitCreditSales() {
+	const creditSaleWeight = Number(form.tonnage);
+
+    if (availableStock.value !== null && creditSaleWeight > availableStock.value) {
+        toast.error(`Only ${availableStock.value}kg available!`);
+        return;
+    }
+
 	try {
 		isLoading.value = true;
-		await creditSalesStore.recordNewCreditSale(form)
+		await creditSalesStore.recordNewCreditSale({ ...form, tonnage: creditSaleWeight });
 
-		Object.assign(form, {
-			buyerName: "",
-			nationalId: "",
-			location: "",
-			contact: "",
-			produceName: "",
-			tonnage: "",
-			dispatchDate: "",
-			time: "",
-			amountDue: "",
-			dueDate: "",
-			salesAgent: "",
-			branch: ""
-		})
+		// Refresh the stock store
+        await stockStore.fetchStockForAllBranches();
+
+		toast.success("Sale completed and stock updated!");
+
+		form.buyerName = "",
+		form.nationalId = "",
+		form.location = "",
+		form.contact = "",
+		form.produceName = "",
+		form.tonnage = "",
+		form.amountDue = "",
+		form.dueDate = ""
 	} catch (error) {
 		console.log(error)
 	} finally {
@@ -60,7 +96,7 @@ async function submitCreditSales() {
 
 			<div class="card shadow">
 				<div class="card-header text-white">
-					<h5 class="mb-0">Procurement Record</h5>
+					<h5 class="mb-0">Credit Record - {{ form.branch }}</h5>
 				</div>
 
 				<div class="card-body">
@@ -100,6 +136,7 @@ async function submitCreditSales() {
 								<label for="produceName" class="form-label">Produce Name</label>
 								<input type="text" class="form-control" id="produceName" v-model="form.produceName"
 									placeholder="Enter produce name" required>
+								<small v-if="unitPrice" class="text-success">Unit Price: {{ unitPrice }} UgX/kg</small>
 							</div>
 
 							<!-- tonnage -->
@@ -107,6 +144,7 @@ async function submitCreditSales() {
 								<label for="tonnage" class="form-label">Tonnage (kg)</label>
 								<input type="number" class="form-control" id="tonnage" v-model="form.tonnage" min="0"
 									step="0.01" required>
+								<small v-if="availableStock !== null">Available: {{ availableStock }}kg</small>
 							</div>
 
 							<!-- date -->
@@ -138,13 +176,13 @@ async function submitCreditSales() {
 							<!-- agent name -->
 							<div class="col-md-6">
 								<label for="salesAgent" class="form-label">agent Name</label>
-								<input type="text" class="form-control" id="salesAgent" v-model="form.salesAgent"
+								<input type="text" class="form-control" id="salesAgent" v-model="form.salesAgent" readonly
 									required>
 							</div>
 
 							<div class="col-md-6">
 								<label for="branch" class="form-label">Branch</label>
-								<select class="form-select" id="branch" v-model="form.branch" required>
+								<select class="form-select" id="branch" v-model="form.branch" disabled required>
 									<option value="">-- Select Branch --</option>
 									<option>Maganjo</option>
 									<option>Matugga</option>
@@ -154,9 +192,11 @@ async function submitCreditSales() {
 						</div>
 
 						<div class="mt-4 text-end">
-							<button id="submitBtn" type="submit" :disabled="isLoading" class="btn text-white px-4">
-								{{ isLoading ? "saving..." : "Save Credit Sale" }}
-							</button>
+							<button id="submitBtn" type="submit"
+                            :disabled="isLoading || (availableStock !== null && form.tonnage > availableStock)" 
+                            class="btn btn-success text-white px-4">
+                                {{ isLoading ? "Saving..." : "Record Credit" }}
+                            </button>
 						</div>
 
 					</form>

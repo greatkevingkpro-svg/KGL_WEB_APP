@@ -11,10 +11,13 @@ export const useStockBranchStore = defineStore("stock", () => {
     async function fetchStockForAllBranches() {
         isLoading.value = true
         try {
-            const response = await axios.get("/api/procurements")
-            allBranchStock.value = response.data
+            const response = await axios.get(`/api/stocks?t=${new Date().getTime()}`);
+            // Force a new array reference to trigger Vue's reactivity
+            const freshData = response.data.data || response.data;
+            allBranchStock.value = [...freshData];
         } catch (error) {
-            console.log(error)
+            console.log("Error fetching stock:", error);
+            allBranchStock.value = [];
         } finally {
             isLoading.value = false
         }
@@ -22,12 +25,12 @@ export const useStockBranchStore = defineStore("stock", () => {
 
     // Dynamic Filter: Returns a function to filter by branch
     const getStockByBranch = computed(() => {
-        return (branchId) => {
+        return (branchName) => {
             // Safety check: if data isn't an array yet, return an empty array
             if (!Array.isArray(allBranchStock.value)) {
                 return [];
             }
-            return allBranchStock.value.filter(item => item.branch_id === branchId);
+            return allBranchStock.value.filter(item => item.branch === branchName);
         };
     });
 

@@ -24,4 +24,19 @@ apiClient.interceptors.request.use(
     }
 )
 
+apiClient.interceptors.response.use(
+    (response)=> {
+        console.log("axios response", response)
+        return response;
+    },
+    (error)=> {
+        const userStore = useUserStore();
+        if(error.response.data.reason && error.response.data.reason === "jwt expired") {
+            userStore.invalidateUser()
+        }
+
+        return Promise.reject(error);
+    }
+)
+
 export default apiClient;

@@ -5,7 +5,9 @@ import "../assets/custom-styles/main.css";
 import { reactive, ref } from "vue";
 import { useProcurementStore } from "@/stores/procurementStore";
 
+
 const procurementStore = useProcurementStore();
+
 
 const form = reactive({
   produceName: "",
@@ -136,6 +138,10 @@ async function submitProcurement() {
                 </select>
               </div>
 
+            </div>
+
+            <div v-if="procurementStore.error" color="red">
+              {{ procurementStore.error }}
             </div>
 
             <div class="mt-4 text-end">
