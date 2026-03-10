@@ -9,7 +9,7 @@ const { stockModel } = require("../models/stockModel.js")
 // sales/ get request protector
 protectedRouter.get(
   "/sales",
-  authorizeRoles("manager", "sales agent"),
+  authorizeRoles("manager", "sales agent", "director"),
   async (req, res) => {
     try {
       const sales = await salesModel.find();
@@ -45,7 +45,7 @@ protectedRouter.post(
 
 protectedRouter.get(
   "/credit-sales",
-  authorizeRoles("manager", "sales agent"),
+  authorizeRoles("manager", "sales agent", "director"),
   async (req, res) => {
     try {
       const newCreditSale = await creditSalesModel.find();
