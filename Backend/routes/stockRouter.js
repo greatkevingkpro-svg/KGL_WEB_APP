@@ -10,6 +10,9 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         const stocks = await stockModel.find();
+        
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+
         res.status(200).json(stocks);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -28,7 +31,7 @@ router.get("/:branch/:produceName", async (req, res) => {
         branch: req.params.branch, 
         produceName: req.params.produceName 
     });
-    
+
     if (!stock) {
       return res.status(404).json({ message: "Produce not found in this branch" });
     }
