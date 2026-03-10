@@ -1,179 +1,182 @@
 <script setup>
-
-import { reactive, ref, onMounted } from "vue";
-import "../assets/custom-styles/main.css";
+import { onMounted, computed, ref, nextTick } from "vue";
 import { Chart } from "chart.js/auto";
+import { useUserStore } from "@/stores/userStore";
+import { useStockBranchStore } from "@/stores/stockBranchStore";
+import { useSalesBranchStore, useCreditSalesBranchStore } from "@/stores/branchSalesStore";
 
-// chart render
-onMounted(() => {
-    // SALES LINE CHART
-    new Chart(document.getElementById('salesChart'), {
+// Initialize Stores
+const userStore = useUserStore();
+const stockStore = useStockBranchStore();
+const salesStore = useSalesBranchStore();
+const creditStore = useCreditSalesBranchStore();
+
+// Chart Instances for cleanup
+let salesChartInstance = null;
+let stockChartInstance = null;
+
+// 1. FILTERED DATA (Logic: Director sees ALL, Branch staff see only THEIR branch)
+const branchSales = computed(() => {
+    const data = salesStore.allBranchSales || [];
+    return userStore.user.role === 'director' 
+        ? data 
+        : data.filter(s => s.branch === userStore.user.branch);
+});
+
+const branchStock = computed(() => {
+    const data = stockStore.allBranchStock || [];
+    return userStore.user.role === 'director' 
+        ? data 
+        : data.filter(s => s.branch === userStore.user.branch);
+});
+
+const branchCredits = computed(() => {
+    const data = creditStore.allCreditSales || [];
+    return userStore.user.role === 'director' 
+        ? data 
+        : data.filter(s => s.branch === userStore.user.branch);
+});
+
+// 2. KPI CALCULATIONS
+const totalRevenue = computed(() => {
+    return branchSales.value.reduce((sum, s) => sum + (Number(s.amountPaid) || 0), 0);
+});
+
+const totalStockWeight = computed(() => {
+    return branchStock.value.reduce((sum, s) => sum + (Number(s.tonnage) || 0), 0);
+});
+
+const outstandingCredit = computed(() => {
+    return branchCredits.value.reduce((sum, c) => sum + (Number(c.amountDue) || 0), 0);
+});
+
+// 3. FETCH DATA & RENDER
+onMounted(async () => {
+    try {
+        await Promise.all([
+            stockStore.fetchStockForAllBranches(),
+            salesStore.fetchSalesForAllBranches(),
+            creditStore.fetchCreditSalesForBranches()
+        ]);
+
+        // Crucial: Wait for DOM to update so Canvas IDs exist
+        await nextTick();
+        renderCharts();
+    } catch (err) {
+        console.error("Dashboard Fetch Error:", err);
+    }
+});
+
+function renderCharts() {
+    const salesCtx = document.getElementById('salesChart');
+    const stockCtx = document.getElementById('stockChart');
+
+    if (!salesCtx || !stockCtx) return;
+
+    // Destroy existing charts to prevent memory leaks if re-rendering
+    if (salesChartInstance) salesChartInstance.destroy();
+    if (stockChartInstance) stockChartInstance.destroy();
+
+    // Line Chart: Sales Trend
+    salesChartInstance = new Chart(salesCtx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: branchSales.value.slice(-7).map(s => new Date(s.createdAt).toLocaleDateString()),
             datasets: [{
                 label: 'Sales (UGX)',
-                data: [5000000, 7000000, 6000000, 9000000, 8500000, 10000000],
-                borderColor: '#4f46e5',
-                backgroundColor: 'rgba(79,70,229,0.2)',
-                tension: 0.4,
+                data: branchSales.value.slice(-7).map(s => s.amountPaid),
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                tension: 0.3,
                 fill: true
             }]
         },
-        options: {
-            plugins: { legend: { labels: { color: 'black' } } },
-            scales: {
-                x: { ticks: { color: 'black' } },
-                y: { ticks: { color: 'black' } }
-            }
-        }
+        options: { responsive: true }
     });
 
-    // STOCK BAR CHART
-    new Chart(document.getElementById('stockChart'), {
-        type: 'bar', // changed from 'pie' to 'bar'
+    // Bar Chart: Stock Distribution
+    stockChartInstance = new Chart(stockCtx, {
+        type: 'bar',
         data: {
-            labels: ['Beans', 'Maize', 'Cow Peas', 'G-nuts', 'Soybeans'],
+            labels: branchStock.value.map(s => s.produceName),
             datasets: [{
-                label: 'Stock Quantity (kgs)', // optional label for dataset
-                data: [5000, 4000, 3000, 3500, 3000],
-                backgroundColor: [
-                    '#4f46e5',
-                    '#22c55e',
-                    '#f59e0b',
-                    '#ef4444',
-                    '#06b6d4'
-                ]
+                label: 'KGs',
+                data: branchStock.value.map(s => s.tonnage),
+                backgroundColor: '#198754'
             }]
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false // hide legend for a simple bar chart
-                },
-                title: {
-                    display: true,
-                    text: 'Stock Quantities by Product'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: { responsive: true }
     });
-})
-
+}
 </script>
 
 <template>
-    <!-- MAIN CONTENT -->
-    <div class="content w-100">
-
-        <h3 class="mb-4">Branch Dashboard Overview</h3>
+    <div class="content p-4 w-100">
+        <h3 class="mb-4">{{ userStore.user.role === 'director' ? 'Global' : userStore.user.branch }} Overview</h3>
 
         <!-- KPI CARDS -->
         <div class="row g-4 mb-4">
-
-            <div class="col-md-3">
-                <div class="card analytics-card border-start border-4 border-success">
+            <div class="col-md-4">
+                <div class="card analytics-card border-start border-4 border-success p-3">
                     <h6 class="fw-bold text-success fs-5">Total Revenue</h6>
-                    <h4>UGX 25,400,000</h4>
-                    <small class="text-success">+12% this month</small>
+                    <h4>UGX {{ totalRevenue.toLocaleString() }}</h4>
                 </div>
             </div>
-
-            <div class="col-md-3">
-                <div class="card analytics-card border-start border-4 border-warning">
+            <div class="col-md-4">
+                <div class="card analytics-card border-start border-4 border-warning p-3">
                     <h6 class="fw-bold text-warning fs-5">Total Stock</h6>
-                    <h4>18,500 KG</h4>
-                    <small class="text-warning">3 items low</small>
+                    <h4>{{ totalStockWeight.toLocaleString() }} KG</h4>
                 </div>
             </div>
-
-            <div class="col-md-3">
-                <div class="card analytics-card border-start border-4 border-danger">
-                    <h6 class="fw-bold text-danger fs-5">Credit Outstanding</h6>
-                    <h4>UGX 6,800,000</h4>
-                    <small class="text-danger">5 pending payments</small>
+            <div class="col-md-4">
+                <div class="card analytics-card border-start border-4 border-danger p-3">
+                    <h6 class="fw-bold text-danger fs-5">Credit Due</h6>
+                    <h4>UGX {{ outstandingCredit.toLocaleString() }}</h4>
                 </div>
             </div>
-
-            <div class="col-md-3">
-                <div class="card analytics-card border-start border-4 border-success">
-                    <h6 class="fw-bold text-success fs-5">Today's Sales</h6>
-                    <h4>UGX 2,150,000</h4>
-                    <small class="text-success">+8% today</small>
-                </div>
-            </div>
-
         </div>
 
-        <!-- CHARTS ROW -->
+        <!-- CHARTS -->
         <div class="row g-4 mb-4">
-
             <div class="col-md-6">
                 <div class="card chart-card p-3">
-                    <h6>Monthly Sales Trend</h6>
+                    <h6>Recent Sales Trend</h6>
                     <canvas id="salesChart"></canvas>
                 </div>
             </div>
-
             <div class="col-md-6">
                 <div class="card chart-card p-3">
-                    <h6>Stock Distribution</h6>
+                    <h6>Current Stock Levels</h6>
                     <canvas id="stockChart"></canvas>
                 </div>
             </div>
-
         </div>
 
         <!-- RECENT SALES TABLE -->
         <div class="card p-3">
-            <h6 class="mb-3">Recent Sales</h6>
-
+            <h6 class="mb-3">Latest Transactions</h6>
             <div class="table-responsive">
                 <table class="table table-striped table-success table-hover">
                     <thead>
                         <tr>
                             <th>Produce</th>
                             <th>Buyer</th>
-                            <th>KG</th>
                             <th>Amount (UGX)</th>
+                            <th v-if="userStore.user.role === 'director'">Branch</th>
                             <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Beans</td>
-                            <td>John Traders</td>
-                            <td>500</td>
-                            <td>1,250,000</td>
-                            <td>23 Feb 2026</td>
-                        </tr>
-                        <tr>
-                            <td>Maize</td>
-                            <td>Kampala Millers</td>
-                            <td>800</td>
-                            <td>2,000,000</td>
-                            <td>23 Feb 2026</td>
-                        </tr>
-                        <tr>
-                            <td>Soybeans</td>
-                            <td>Sarah Wholesalers</td>
-                            <td>300</td>
-                            <td>900,000</td>
-                            <td>22 Feb 2026</td>
+                        <tr v-for="sale in branchSales.slice(-5).reverse()" :key="sale._id">
+                            <td>{{ sale.produceName }}</td>
+                            <td>{{ sale.buyerName }}</td>
+                            <td>{{ Number(sale.amountPaid).toLocaleString() }}</td>
+                            <td v-if="userStore.user.role === 'director'">{{ sale.branch }}</td>
+                            <td>{{ new Date(sale.createdAt).toLocaleDateString() }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
-
 </template>
-
-<style scoped></style>

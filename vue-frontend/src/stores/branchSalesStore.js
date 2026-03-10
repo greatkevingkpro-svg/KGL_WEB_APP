@@ -13,7 +13,7 @@ export const useSalesBranchStore = defineStore("sales", () => {
         try {
             const response = await axios.get("/api/sales")
             // alert("your request was successfully")
-            allBranchSales.value = response.data.data
+            allBranchSales.value = response.data.data || response.data;
         } catch (error) {
             console.log(error)
         } finally {
@@ -51,7 +51,7 @@ export const useCreditSalesBranchStore = defineStore("credit-sales", () => {
         try {
             const response = await axios.get("/api/credit-sales")
             // alert("your request was successfully")
-            allCreditSales.value = response.data.data
+            allBranchSales.value = response.data.data || response.data;
         } catch (error) {
             console.log(error)
         } finally {

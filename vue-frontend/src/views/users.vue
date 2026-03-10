@@ -1,7 +1,7 @@
 <script setup>
 import { Modal } from "bootstrap";
 import "@/assets/custom-styles/main.css";
-import { onMounted, onUnmounted, reactive, ref, nextTick } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, nextTick, computed } from 'vue';
 import { useUserInfoStore, usePostUserStore, useDeleteUserStore } from '@/stores/userInfoStore';
 
 const usersStore = useUserInfoStore();
@@ -29,7 +29,7 @@ const form = reactive({
 // --- LIFECYCLE HOOKS ---
 onMounted(() => {
     usersStore.fetchUserRecords();
-    
+
     // Initialize using the template ref instead of document.getElementById
     if (userModalRef.value) {
         userModal = new Modal(userModalRef.value);
@@ -49,7 +49,7 @@ function openAddModal() {
     isEditing.value = false;
     currentEditId.value = null;
     resetFormState();
-    
+
     if (userModal) {
         userModal.show();
     }
@@ -98,12 +98,12 @@ async function prepareEdit(id) {
         if (userData) {
             isEditing.value = true;
             currentEditId.value = id;
-            
+
             Object.assign(form, userData);
 
             // Wait for Vue to finish updating the form before showing the modal
             await nextTick();
-            
+
             if (userModal) {
                 userModal.show();
             }
@@ -123,7 +123,42 @@ async function removeUser(id) {
         console.error("Delete failed:", error);
     }
 }
+
+
+const currentPage = ref(1);
+const itemsPerPage = 10;
+
+// This replaces usersStore.users in your v-for
+const paginatedUsers = computed(() => {
+  // 1. Determine where the actual array is
+  const rawData = usersStore.users;
+  
+  // 2. Extract the array if it's wrapped in an object { data: [...] }
+  const actualUsers = Array.isArray(rawData) ? rawData : (rawData?.data || []);
+
+  // 3. Perform the slice safely
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return actualUsers.slice(start, end);
+});
+// Calculate total pages for the UI
+const totalPages = computed(() => {
+  const rawData = usersStore.users;
+  const count = Array.isArray(rawData) ? rawData.length : (rawData?.data?.length || 0);
+  return Math.ceil(count / itemsPerPage);
+});
+
+function setPage(page) {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+    }
+}
+
+
 </script>
+
+
+
 
 
 <template>
@@ -158,7 +193,7 @@ async function removeUser(id) {
                 </thead>
                 <tbody id="usersTableBody">
                     <!-- Loop through the users array from your store -->
-                    <tr v-for="user in usersStore.users" :key="user._id">
+                    <tr v-for="user in paginatedUsers" :key="user._id">
                         <td>{{ user.name }}</td>
                         <td>{{ user.userName }}</td>
                         <td>{{ user.role }}</td>
@@ -194,13 +229,31 @@ async function removeUser(id) {
             </table>
 
             <!-- Pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center" id="paginationContainer"></ul>
+            <nav aria-label="Page navigation" v-if="totalPages > 1">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <button class="page-link text-success" @click="setPage(currentPage - 1)">Previous</button>
+                    </li>
+
+                    <li v-for="page in totalPages" :key="page" class="page-item"
+                        :class="{ active: currentPage === page }">
+                        <button class="page-link"
+                            :class="currentPage === page ? 'bg-success border-success' : 'text-success'"
+                            @click="setPage(page)">
+                            {{ page }}
+                        </button>
+                    </li>
+
+                    <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                        <button class="page-link text-success" @click="setPage(currentPage + 1)">Next</button>
+                    </li>
+                </ul>
             </nav>
         </div>
 
         <!-- Add User Modal -->
-        <div class="modal fade" id="addUserModal" ref="userModalRef" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addUserModal" ref="userModalRef" tabindex="-1" aria-labelledby="addUserModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- Modal Header -->
