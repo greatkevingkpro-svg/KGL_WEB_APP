@@ -173,18 +173,28 @@ router.post("/", async (req, res, next) => {
 
     // Record Sale using salesModel
     const sales = new salesModel(body);
+
+    console.log("Stock Found:", stock)
+
     const savedSales = await sales.save()
 
-    // Decrease Stock Tonnage physically
+    const cleanName = produceName.trim();
+    const cleanBranch = branch.trim();
+
     const updatedStock = await stockModel.findOneAndUpdate(
-      { produceName: produceName.trim(), branch: branch.trim() },
+      {
+        // This regex makes "beans" match "Beans"
+        produceName: { $regex: new RegExp(`^${cleanName}$`, 'i') },
+        branch: cleanBranch
+      },
       { $inc: { tonnage: -amountToSubtract } },
-      { returnDocument: 'after' }
+      { new: true } // 'new: true' is the Mongoose way for 'returnDocument: after'
     );
 
     if (!updatedStock) {
-      console.error("FAILED TO UPDATE STOCK: No matching record found.");
-      return res.status(500).json({ message: "Database error: Could not find stock to decrement." });
+      // If this logs, the names in your Stock collection don't match your Form
+      console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
+      return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }
 
     res.status(201).json({ message: "Sale successful", remainingStock: updatedStock.tonnage });

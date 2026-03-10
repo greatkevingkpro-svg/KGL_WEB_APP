@@ -138,7 +138,7 @@ router.get("/:id", async (req, res, next) => {
   }
 
   try {
-    let creditSales = await creditSalesModel.find({_id: id});
+    let creditSales = await creditSalesModel.find({ _id: id });
     if (!creditSales) {
       res.status(404).json({ message: "credit sale not found" });
     }
@@ -214,28 +214,39 @@ router.post("/", async (req, res, next) => {
     });
 
     if (!stock || stock.tonnage < tonnage) {
-      return res.status(400).json({ 
-        message: `Insufficient stock for credit at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.` 
+      return res.status(400).json({
+        message: `Insufficient stock for credit at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.`
       });
     }
 
     // Record the Credit Sale using my creditSalesModel
     let creditSales = new creditSalesModel(body);
+
+    console.log("Stock Found:", stock)
+
     const savedcreditSales = await creditSales.save()
 
-    // Decrease Stock Tonnage physically
+    const cleanName = produceName.trim();
+    const cleanBranch = branch.trim();
+
     const updatedStock = await stockModel.findOneAndUpdate(
-      { produceName: produceName.trim(), branch: branch.trim() },
+      {
+        // This regex makes "beans" match "Beans"
+        produceName: { $regex: new RegExp(`^${cleanName}$`, 'i') },
+        branch: cleanBranch
+      },
       { $inc: { tonnage: -amountToSubtract } },
-      { returnDocument: 'after' }
+      { new: true } // 'new: true' is the Mongoose way for 'returnDocument: after'
     );
 
     if (!updatedStock) {
-      console.error("FAILED TO UPDATE STOCK: No matching record found.");
-      return res.status(500).json({ message: "Database error: Could not find stock to decrement." });
+      // If this logs, the names in your Stock collection don't match your Form
+      console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
+      return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }
-      
-    res.status(201).json({message: "Credit sale successful. Produce removed from store.", data: savedcreditSales})
+
+
+    res.status(201).json({ message: "Credit sale successful. Produce removed from store.", data: savedcreditSales })
 
   } catch (error) {
     console.error("Error saving credit sales:", error);
@@ -243,4 +254,4 @@ router.post("/", async (req, res, next) => {
   }
 })
 
-module.exports = {router}
+module.exports = { router }
