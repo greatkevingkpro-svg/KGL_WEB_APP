@@ -209,7 +209,7 @@ router.post("/", async (req, res, next) => {
 
     // Check Store availability
     const stock = await stockModel.findOne({
-      produceName: produceName.trim(),
+      produceName: { $regex: new RegExp(`^${produceName.trim()}$`, 'i') },
       branch: branch.trim()
     });
 
