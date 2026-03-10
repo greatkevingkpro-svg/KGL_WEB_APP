@@ -17,6 +17,7 @@ const { router: procurementRouter } = require("./routes/procRoutes.js");
 const { router: salesRouter } = require("./routes/salesRoutes.js");
 const { router: creditSales } = require("./routes/creditSalesRoutes.js")
 const { router: usersRouter } = require("./routes/usersRoutes.js");
+const { router: stockRouter } = require("./routes/stockRouter.js")
 const authRouter = require("./routes/auth.js");
 
 const { authMiddleware } = require("./middleware/authMiddleware.js")
@@ -83,6 +84,7 @@ app.use("/api", authMiddleware, protectedRouter);
 
 // use all the imported routers for related path
 protectedRouter.use("/procurements", procurementRouter);
+protectedRouter.use("/stocks", stockRouter);
 protectedRouter.use("/sales", salesRouter);
 protectedRouter.use("/credit-sales", creditSales);
 protectedRouter.use("/users", usersRouter);

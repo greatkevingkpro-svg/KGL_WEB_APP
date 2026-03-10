@@ -5,7 +5,7 @@ const { salesModel } = require("../models/SalesModels.js")
 const { creditSalesModel } = require("../models/CreditSalesModels.js")
 const { procurementModel } = require("../models/ProcModels.js")
 const { userModel } = require("../models/UsersModels.js")
-
+const { stockModel } = require("../models/stockModel.js")
 // sales/ get request protector
 protectedRouter.get(
   "/sales",
@@ -127,6 +127,23 @@ protectedRouter.post(
         message: "user created successfully",
         data: newUser
       });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  }
+);
+
+protectedRouter.get(
+  "/stocks",
+  authorizeRoles("manager", "director", "sales agent"),
+  async (req, res) => {
+    try {
+      const stocks = await stockModel.find()
+
+      res.status(200).json({
+        message: "Stock fetched successfully",
+        data: stocks
+      })
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
     }
