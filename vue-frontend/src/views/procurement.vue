@@ -4,22 +4,23 @@ import "../assets/custom-styles/main.css";
 
 import { reactive, ref } from "vue";
 import { useProcurementStore } from "@/stores/procurementStore";
+import { useUserStore } from "@/stores/userStore";
 
 
 const procurementStore = useProcurementStore();
-
+const userStore = useUserStore();
 
 const form = reactive({
   produceName: "",
   produceType: "",
-  date: "",
-  time: "",
+  date: new Date().toISOString().slice(0, 10),
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
   tonnage: "",
   cost: "",
   sellingPrice: "",
   dealerName: "",
   contact: "",
-  branch: ""
+  branch: userStore.user.branch || ""
 })
 
 const isLoading = ref(false);
@@ -59,7 +60,7 @@ async function submitProcurement() {
 
       <div class="card shadow">
         <div class="card-header text-white">
-          <h5 class="mb-0">Procurement Record</h5>
+          <h5 class="mb-0">Procurement Record - {{ userStore.user.branch }}</h5>
         </div>
 
         <div class="card-body">
@@ -131,7 +132,7 @@ async function submitProcurement() {
 
               <div class="col-md-6">
                 <label for="branch" class="form-label">Branch</label>
-                <select class="form-select" id="branch" v-model="form.branch" required>
+                <select class="form-select" id="branch" v-model="form.branch" disabled required>
                   <option value="">-- Select Branch --</option>
                   <option>Maganjo</option>
                   <option>Matugga</option>

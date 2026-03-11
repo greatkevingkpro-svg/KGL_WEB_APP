@@ -24,10 +24,12 @@ const form = reactive({
 const isLoading = ref(false);
 const unitPrice = ref(0);
 const availableStock = ref(null);
+const stockError = ref(""); // New: To store the "Not Found" message
 
 watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) => {
     if (newName && newBranch) {
         try {
+            stockError.value = ""; // Reset error
             const response = await axios.get(`/api/stocks/${newBranch}/${newName}`);
             if (response.data) {
                 unitPrice.value = response.data.sellingPrice;
@@ -37,7 +39,11 @@ watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) 
         } catch (error) {
             unitPrice.value = 0;
             availableStock.value = null;
+            // Set the error message if the backend fails
+            stockError.value = error.response?.data?.message || "Produce not found in this branch";
         }
+    } else {
+        stockError.value = "";
     }
 });
 
@@ -57,13 +63,13 @@ async function submitSale() {
         isLoading.value = true;
         await salesStore.recordNewSale({ ...form, tonnage: saleWeight });
 
-        console.log(typeof form.produceName.valueOf());
-        
+        // console.log(typeof form.produceName.valueOf());
+
         // Refresh the stock store
         await stockStore.fetchStockForAllBranches();
 
         toast.success("Sale completed and stock updated!");
-        
+
         form.produceName = "";
         form.tonnage = "";
         form.amountPaid = "";
@@ -92,42 +98,53 @@ async function submitSale() {
                                 <input type="text" class="form-control" id="produceName" v-model="form.produceName"
                                     placeholder="Enter produce name" required>
                                 <small v-if="unitPrice" class="text-success">Unit Price: {{ unitPrice }} UgX/kg</small>
+                                <!-- Error message shown only when produce is not found -->
+                                <div v-if="stockError" class="invalid-feedback d-block">
+                                    {{ stockError }}
+                                </div>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="tonnage" class="form-label">Tonnage (kg)</label>
-                                <input type="number" class="form-control" id="tonnage" v-model.number="form.tonnage" min="0.01" step="0.01" required>
+                                <input type="number" class="form-control" id="tonnage" v-model.number="form.tonnage"
+                                    min="0.01" step="0.01" required>
                                 <small v-if="availableStock !== null">Available: {{ availableStock }}kg</small>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="amountPaid" class="form-label">Amount Paid (UGX)</label>
-                                <input type="number" class="form-control fw-bold" id="amountPaid" v-model="form.amountPaid" readonly required>
+                                <input type="number" class="form-control fw-bold" id="amountPaid"
+                                    v-model="form.amountPaid" readonly required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="buyerName" class="form-label">Buyer Name</label>
-                                <input type="text" class="form-control" id="buyerName" v-model="form.buyerName" required>
+                                <input type="text" class="form-control" id="buyerName" v-model="form.buyerName"
+                                    required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="salesAgent" class="form-label">Sales Agent</label>
-                                <input type="text" class="form-control bg-light" id="salesAgent" v-model="form.salesAgent" readonly required>
+                                <input type="text" class="form-control bg-light" id="salesAgent"
+                                    v-model="form.salesAgent" readonly required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="dateOfSale" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="dateOfSale" v-model="form.dateOfSale" required>
+                                <input type="date" class="form-control" id="dateOfSale" v-model="form.dateOfSale"
+                                    required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="timePurchaseMade" class="form-label">Time</label>
-                                <input type="time" class="form-control" id="timePurchaseMade" v-model="form.timePurchaseMade" required>
+                                <input type="time" class="form-control" id="timePurchaseMade"
+                                    v-model="form.timePurchaseMade" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="branch" class="form-label">Branch</label>
-                                <select class="form-select bg-light" id="branch" v-model="form.branch" disabled required>
+                                <select class="form-select bg-light" id="branch" v-model="form.branch" disabled
+                                    required>
                                     <option value="">-- Select Branch --</option>
                                     <option>Maganjo</option>
                                     <option>Matugga</option>
@@ -137,8 +154,8 @@ async function submitSale() {
 
                         <div class="mt-4 text-end">
                             <button id="submitBtn" type="submit"
-                            :disabled="isLoading || (availableStock !== null && form.tonnage > availableStock)" 
-                            class="btn btn-success text-white px-4">
+                                :disabled="isLoading || (availableStock !== null && form.tonnage > availableStock)"
+                                class="btn btn-success text-white px-4">
                                 {{ isLoading ? "Saving..." : "Record Sale" }}
                             </button>
                         </div>

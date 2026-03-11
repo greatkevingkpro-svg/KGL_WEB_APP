@@ -4,8 +4,10 @@ import "../assets/custom-styles/main.css";
 
 import { onMounted, computed } from "vue";
 import { useStockBranchStore } from "@/stores/stockBranchStore";
+import { useUserStore } from "@/stores/userStore";
 
 const branchesStock = useStockBranchStore();
+const userStore = useUserStore()
 
 onMounted(() => {
     branchesStock.fetchStockForAllBranches();
@@ -45,7 +47,7 @@ const getStatus = (tonnage) => {
 <template>
 
     <!-- MAIN CONTENT -->
-    <div class="content w-100">
+    <div v-if="userStore.user.branch === 'Maganjo'" class="content w-100">
         <h3 class="mb-4">Maganjo Branch</h3>
 
         <!-- stock Table -->
@@ -88,7 +90,7 @@ const getStatus = (tonnage) => {
         </table>
     </div>
 
-    <div class="content w-100">
+    <div v-if="userStore.user.branch === 'Matugga'" class="content w-100">
         <h3 class="mb-4">Matugga Branch</h3>
 
         <!-- Users Table -->

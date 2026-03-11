@@ -11,6 +11,7 @@ body {
   align-items: center;
   padding: 0 15px;
   flex-grow: 1;
+
 }
 
 #sidebarToggle {
@@ -20,7 +21,7 @@ body {
 .content-header {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 100;
   background-color: rgb(250, 252, 241);
   /* same as body so it blends */
   border-radius: 8px;

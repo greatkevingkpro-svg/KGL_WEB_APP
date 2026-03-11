@@ -250,7 +250,7 @@ async function handleLogout() {
 
                 <!-- TOP BAR -->
                 <div class="top-bar d-flex align-items-center justify-content-between p-2 rounded flex-grow-1 ms-2">
-                    <span class="text-success">Logged in as: <strong>Kevin</strong></span>
+                    <span class="text-success"><strong>{{ userStore.user.name }}</strong> <span class="badge bg-success text-white">{{ userStore.user.role }}</span></span>
 
                     <button id="logoutBtn" class="btn btn-danger d-flex align-items-center gap-2" @click="handleLogout">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

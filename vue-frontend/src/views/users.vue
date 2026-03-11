@@ -75,7 +75,7 @@ async function handleSave() {
 
         if (userModal) userModal.hide();
 
-        // Standard cleanup for the "Chrome Freeze" issue
+        // Standard cleanup for the Freeze issue
         document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
@@ -126,7 +126,7 @@ async function removeUser(id) {
 
 
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 // This replaces usersStore.users in your v-for
 const paginatedUsers = computed(() => {

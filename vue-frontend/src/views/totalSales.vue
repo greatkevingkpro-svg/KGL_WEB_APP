@@ -1,75 +1,59 @@
 <script setup>
-
 import "../assets/custom-styles/main.css";
-
-import { onMounted, computed } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useSalesBranchStore, useCreditSalesBranchStore } from "@/stores/branchSalesStore"
 
 const salesForBranches = useSalesBranchStore();
 const creditSalesForBranches = useCreditSalesBranchStore();
 
+// Pagination Config
+const itemsPerPage = 5;
+const maganjoSalePage = ref(1);
+const matuggaSalePage = ref(1);
+const maganjoCreditPage = ref(1);
+const matuggaCreditPage = ref(1);
+
 onMounted(() => {
     salesForBranches.fetchSalesForAllBranches();
-})
-
-onMounted(() => {
     creditSalesForBranches.fetchCreditSalesForBranches();
-})
-
-//for madanjo branch
-const maganjoData = computed(() => {
-    if (!salesForBranches.allBranchSales) {
-        return [];
-    }
-
-    return salesForBranches.allBranchSales.filter(item => item.branch === 'Maganjo');
 });
 
-//for madanjo branch
-const matuggaData = computed(() => {
-    if (!salesForBranches.allBranchSales) {
-        return [];
-    }
-
-    return salesForBranches.allBranchSales.filter(item => item.branch === 'Matugga');
-});
-
-
-//for madanjo branch
-const maganjoCreditData = computed(() => {
-    if (!creditSalesForBranches.allCreditSales) {
-        return [];
-    }
-
-    return creditSalesForBranches.allCreditSales.filter(item => item.branch === "Maganjo");
-});
-
-//for matugga branch
-const matuggaCreditData = computed(() => {
-    if (!creditSalesForBranches.allCreditSales) {
-        return [];
-    }
-
-    return creditSalesForBranches.allCreditSales.filter(item => item.branch === 'Matugga');
-});
-
-
-const getTheStatus = (amountDue) => {
-    if (amountDue <= 100000) {
-        return { label: 'Average', class: 'bg-warning text-dark' };
-    } else if (amountDue <= 1000000) {
-        return { label: 'High', class: 'bg-warning text-dark' };
-    } else if (amountDue < 2000000) {
-        return { label: 'Very High', class: 'bg-danger text-white' }; 
-    } else {
-        return { label: 'Critical', class: 'bg-dark text-white' };
-    }
+// Helper for slicing data
+const paginate = (data, page) => {
+    const start = (page - 1) * itemsPerPage;
+    return data.slice(start, start + itemsPerPage);
 };
 
+// --- SALES PAGINATION ---
+const maganjoSalesAll = computed(() => (salesForBranches.allBranchSales || []).filter(item => item.branch === 'Maganjo'));
+const maganjoData = computed(() => paginate(maganjoSalesAll.value, maganjoSalePage.value));
+const maganjoSaleTotal = computed(() => Math.ceil(maganjoSalesAll.value.length / itemsPerPage));
+
+const matuggaSalesAll = computed(() => (salesForBranches.allBranchSales || []).filter(item => item.branch === 'Matugga'));
+const matuggaData = computed(() => paginate(matuggaSalesAll.value, matuggaSalePage.value));
+const matuggaSaleTotal = computed(() => Math.ceil(matuggaSalesAll.value.length / itemsPerPage));
+
+// --- CREDIT PAGINATION ---
+const maganjoCreditAll = computed(() => (creditSalesForBranches.allCreditSales || []).filter(item => item.branch === "Maganjo"));
+const maganjoCreditData = computed(() => paginate(maganjoCreditAll.value, maganjoCreditPage.value));
+const maganjoCreditTotal = computed(() => Math.ceil(maganjoCreditAll.value.length / itemsPerPage));
+
+const matuggaCreditAll = computed(() => (creditSalesForBranches.allCreditSales || []).filter(item => item.branch === 'Matugga'));
+const matuggaCreditData = computed(() => paginate(matuggaCreditAll.value, matuggaCreditPage.value));
+const matuggaCreditTotal = computed(() => Math.ceil(matuggaCreditAll.value.length / itemsPerPage));
+
+const getTheStatus = (amountDue) => {
+    const amount = Number(amountDue);
+    if (amount <= 100000) return { label: 'Average', class: 'bg-warning text-dark' };
+    if (amount <= 1000000) return { label: 'High', class: 'bg-warning text-dark' };
+    if (amount < 2000000) return { label: 'Very High', class: 'bg-danger text-white' }; 
+    return { label: 'Critical', class: 'bg-dark text-white' };
+};
 </script>
 
+
 <template>
-    <span class="badge mb-4 bg-success text-dark">Maganjo Branch</span>
+    <!-- <span class="badge mb-4 bg-success text-dark">Maganjo Branch</span> -->
     <!-- MAIN CONTENT -->
     <div class="content w-100">
         <h3 class="mb-4">Maganjo Sales</h3>
@@ -109,6 +93,20 @@ const getTheStatus = (amountDue) => {
                 </tr>
             </tbody>
         </table>
+
+        <nav v-if="maganjoSaleTotal > 1">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{ disabled: maganjoSalePage === 1 }">
+                    <button class="page-link text-success" @click="maganjoSalePage--">Previous</button>
+                </li>
+                <li v-for="p in maganjoSaleTotal" :key="p" class="page-item" :class="{ active: maganjoSalePage === p }">
+                    <button class="page-link" :class="maganjoSalePage === p ? 'bg-success text-white border-success' : 'text-success'" @click="maganjoSalePage = p">{{ p }}</button>
+                </li>
+                <li class="page-item" :class="{ disabled: maganjoSalePage === maganjoSaleTotal }">
+                    <button class="page-link text-success" @click="maganjoSalePage++">Next</button>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -150,6 +148,21 @@ const getTheStatus = (amountDue) => {
                 </tr>
             </tbody>
         </table>
+
+
+        <nav v-if="matuggaSaleTotal > 1">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{ disabled: matuggaSalePage === 1 }">
+                    <button class="page-link text-success" @click="matuggaSalePage--">Previous</button>
+                </li>
+                <li v-for="p in matuggaSaleTotal" :key="p" class="page-item" :class="{ active: matuggaSalePage === p }">
+                    <button class="page-link" :class="matuggaSalePage === p ? 'bg-success text-white border-success' : 'text-success'" @click="matuggaSalePage = p">{{ p }}</button>
+                </li>
+                <li class="page-item" :class="{ disabled: matuggaSalePage === matuggaSaleTotal }">
+                    <button class="page-link text-success" @click="matuggaSalePage++">Next</button>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -201,6 +214,20 @@ const getTheStatus = (amountDue) => {
                 </tr>
             </tbody>
         </table>
+
+        <nav v-if="maganjoCreditTotal > 1">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{ disabled: maganjoCreditPage === 1 }">
+                    <button class="page-link text-success" @click="maganjoCreditPage--">Previous</button>
+                </li>
+                <li v-for="p in maganjoCreditTotal" :key="p" class="page-item" :class="{ active: maganjoCreditPage === p }">
+                    <button class="page-link" :class="maganjoCreditPage === p ? 'bg-success text-white border-success' : 'text-success'" @click="maganjoCreditPage = p">{{ p }}</button>
+                </li>
+                <li class="page-item" :class="{ disabled: maganjoCreditPage === maganjoCreditTotal }">
+                    <button class="page-link text-success" @click="maganjoCreditPage++">Next</button>
+                </li>
+            </ul>
+        </nav>
     </div>
 
 
@@ -252,6 +279,21 @@ const getTheStatus = (amountDue) => {
                 </tr>
             </tbody>
         </table>
+
+
+        <nav v-if="matuggaCreditTotal > 1">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{ disabled: matuggaCreditPage === 1 }">
+                    <button class="page-link text-success" @click="matuggaCreditPage--">Previous</button>
+                </li>
+                <li v-for="p in matuggaCreditTotal" :key="p" class="page-item" :class="{ active: matuggaCreditPage === p }">
+                    <button class="page-link" :class="matuggaCreditPage === p ? 'bg-success text-white border-success' : 'text-success'" @click="matuggaCreditPage = p">{{ p }}</button>
+                </li>
+                <li class="page-item" :class="{ disabled: matuggaCreditPage === matuggaCreditTotal }">
+                    <button class="page-link text-success" @click="matuggaCreditPage++">Next</button>
+                </li>
+            </ul>
+        </nav>
     </div>
 
 </template>

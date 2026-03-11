@@ -24,7 +24,7 @@ export const useSalesBranchStore = defineStore("sales", () => {
     // Dynamic Filter: Returns a function to filter by branch
     const getSalesByBranch = computed(() => {
         return (branchId) => {
-            // Safety check: if data isn't an array yet, return an empty array
+            // Safety check: if data isn't an array, return an empty array
             if (!Array.isArray(allBranchSales.value)) {
                 return [];
             }
@@ -51,7 +51,7 @@ export const useCreditSalesBranchStore = defineStore("credit-sales", () => {
         try {
             const response = await axios.get("/api/credit-sales")
             // alert("your request was successfully")
-            allBranchSales.value = response.data.data || response.data;
+            allCreditSales.value = response.data.data || response.data;
         } catch (error) {
             console.log(error)
         } finally {
@@ -62,7 +62,7 @@ export const useCreditSalesBranchStore = defineStore("credit-sales", () => {
     // Dynamic Filter: Returns a function to filter by branch
     const getCreditSalesByBranch = computed(() => {
         return (branchId) => {
-            // Safety check: if data isn't an array yet, return an empty array
+            // Safety check: if data isn't an array, return an empty array
             if (!Array.isArray(allCreditSales.value)) {
                 return [];
             }
