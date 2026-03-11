@@ -42,9 +42,6 @@ onUnmounted(() => {
     document.body.classList.remove('modal-open');
 });
 
-// --- CORE FUNCTIONS ---
-
-// UNCOMMENTED THIS:
 function openAddModal() {
     isEditing.value = false;
     currentEditId.value = null;
