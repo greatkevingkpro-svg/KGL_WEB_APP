@@ -15,19 +15,14 @@ onMounted(() => {
 })
 
 // 1. Create computed properties for each branch
-// Change "Maganjo" and "Matugga" to match exactly what is in database 'branch' field
 const maganjoData = computed(() => {
-    // Safety check: ensure we are filtering an array
+    // Safety check: ensure that it is filtering an array
     const dataArray = Array.isArray(allBranchStock.value) ? allBranchStock.value : [];
 
     return branchesStock.getStockByBranch('Maganjo');
 });
 
 const matuggaData = computed(() => {
-    // if (!branchesStock.allBranchStock) {
-    //     return [];
-    // }
-    // Safety check: ensure we are filtering an array
     const dataArray = Array.isArray(allBranchStock.value) ? allBranchStock.value : [];
 
     return branchesStock.getStockByBranch('Matugga');

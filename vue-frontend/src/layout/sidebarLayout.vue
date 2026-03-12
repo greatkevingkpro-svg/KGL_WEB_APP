@@ -36,12 +36,11 @@ function closeSidebar() {
     sidebarOpen.value = false
 }
 
-// 2. Updated resize logic
+//  resize logic
 function checkWindowSize() {
     if (window.innerWidth < 768) {
         sidebarOpen.value = false;
     } else {
-        // Optional: keep it open on desktop
         sidebarOpen.value = true;
     }
 }
@@ -56,7 +55,7 @@ onUnmounted(() => {
 })
 
 async function handleLogout() {
-    // 1. Ask for confirmation (optional but recommended)
+    // 1. Ask for confirmation
     if (confirm("Are you sure you want to logout?")) {
         // 2. Clear the store
         userStore.logout();
@@ -64,8 +63,6 @@ async function handleLogout() {
         // 3. Redirect to login
         router.push("/login");
         
-        // 4. Force a clean state (optional)
-        // window.location.reload(); 
     }
 }
 
@@ -74,7 +71,6 @@ async function handleLogout() {
 <template>
 
     <div class="d-flex">
-        <!-- In your template -->
         <div v-if="sidebarOpen" class="d-md-none" id="sidebarOverlay" @click="closeSidebar"></div>
 
         <!-- SIDEBAR -->

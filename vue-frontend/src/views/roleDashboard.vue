@@ -16,7 +16,7 @@ const creditStore = useCreditSalesBranchStore();
 let salesChartInstance = null;
 let stockChartInstance = null;
 
-// 1. FILTERED DATA (Strictly filtered by the logged-in user's branch)
+// 1. FILTERED DATA 
 const branchSales = computed(() => {
     const data = salesStore.allBranchSales || [];
     return data.filter(s => s.branch === userStore.user.branch);

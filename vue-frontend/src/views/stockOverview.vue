@@ -36,9 +36,7 @@ const getStatus = (tonnage) => {
         return { label: 'Low Stock', class: 'bg-warning text-dark' };
     } else {
         // 1000 or above
-        return { label: 'Available', class: 'bg-success text-white' }; // Usually Available is green (success)
-        // If you specifically want danger for "Available" as requested:
-        // return { label: 'Available', class: 'bg-danger text-white' }; 
+        return { label: 'Available', class: 'bg-success text-white' }; 
     }
 };
 

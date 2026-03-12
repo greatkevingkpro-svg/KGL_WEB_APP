@@ -31,7 +31,7 @@ export const useUserInfoStore = defineStore("users",()=> {
         try {
             const response = await axios.get(`/api/users/${userId}`)
             currentUser.value = response.data.data
-            return response.data.data // Return data so you can use it in a form
+            return response.data.data 
         } catch (error) {
             console.error("Error fetching user:", error)
             return null
@@ -87,7 +87,7 @@ export const usePostUserStore = defineStore("postUsers",()=> {
             return response.data;
         } catch (err) {
             console.error("Update error:", err);
-            throw err; // Let the component handle the error display
+            throw err;
         }
     }
 
@@ -109,7 +109,7 @@ export const useDeleteUserStore = defineStore("delete-user", () => {
     const error = ref(null);
 
     async function deleteUser(userId) {
-        // Confirmation before deleting is usually a good idea
+        
         if (!confirm("Are you sure you want to delete this user?")) return;
 
         isLoading.value = true;
@@ -119,7 +119,7 @@ export const useDeleteUserStore = defineStore("delete-user", () => {
             await axios.delete(`/api/users/${userId}`);
             
             alert("User deleted successfully");
-            return true; // Return true so the component knows to refresh the list
+            return true; 
         } catch (err) {
             error.value = err.response?.data?.message || "Failed to delete user";
             console.error("Delete Error:", err);

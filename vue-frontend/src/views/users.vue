@@ -9,7 +9,7 @@ const postUserStore = usePostUserStore();
 const deleteStore = useDeleteUserStore();
 
 // --- STATE VARIABLES (Keep these at the top) ---
-const userModalRef = ref(null); // This will hold the HTML element
+const userModalRef = ref(null);
 let userModal = null;
 const isLoading = ref(false);
 const isEditing = ref(false);
@@ -26,11 +26,10 @@ const form = reactive({
     status: ""
 });
 
-// --- LIFECYCLE HOOKS ---
+
 onMounted(() => {
     usersStore.fetchUserRecords();
 
-    // Initialize using the template ref instead of document.getElementById
     if (userModalRef.value) {
         userModal = new Modal(userModalRef.value);
     }
@@ -125,7 +124,6 @@ async function removeUser(id) {
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
-// This replaces usersStore.users in your v-for
 const paginatedUsers = computed(() => {
   // 1. Determine where the actual array is
   const rawData = usersStore.users;
@@ -189,7 +187,7 @@ function setPage(page) {
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
-                    <!-- Loop through the users array from your store -->
+                    <!-- Loop through the users array from the database store -->
                     <tr v-for="user in paginatedUsers" :key="user._id">
                         <td>{{ user.name }}</td>
                         <td>{{ user.userName }}</td>
@@ -305,7 +303,7 @@ function setPage(page) {
                                 </select>
                             </div>
 
-                            <!-- depart Field -->
+                            <!-- branch Field -->
                             <div class="mb-3">
                                 <label for="branch" class="form-label">Branch</label>
                                 <select class="form-select" id="branch" v-model="form.branch" required>

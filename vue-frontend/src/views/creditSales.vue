@@ -30,12 +30,12 @@ const form = reactive({
 const isLoading = ref(false);
 const unitPrice = ref(0);
 const availableStock = ref(null);
-const stockError = ref(""); // New: To store the "Not Found" message
+const stockError = ref(""); 
 
 watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) => {
     if (newName && newBranch) {
         try {
-			stockError.value = ""; // Reset error
+			stockError.value = ""; 
             const response = await axios.get(`/api/stocks/${newBranch}/${newName}`);
             if (response.data) {
                 unitPrice.value = response.data.sellingPrice;

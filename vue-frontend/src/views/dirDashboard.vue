@@ -15,7 +15,7 @@ const creditStore = useCreditSalesBranchStore();
 let salesChartInstance = null;
 let stockChartInstance = null;
 
-// 1. FILTERED DATA (Logic: Director sees ALL, Branch staff see only THEIR branch)
+// 1. FILTERED DATA
 const branchSales = computed(() => {
     const data = salesStore.allBranchSales || [];
     return userStore.user.role === 'director' 

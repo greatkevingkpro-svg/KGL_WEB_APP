@@ -100,7 +100,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-    // 1. Cleanup Modals (Keep this outside the return)
+    // Cleanup Modals
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
     document.body.classList.remove('modal-open');
 
@@ -108,16 +108,16 @@ router.beforeEach((to, from) => {
     const user = userStore.user;
 
 
-    // 2. Public Access
-    if (to.path === '/login') return true; // Instead of next()
+    // Public Access
+    if (to.path === '/login') return true;
 
-	// 2. CRITICAL: If no token, they CANNOT enter any other page
+	// CRITICAL: If no token, they CANNOT enter any other page
     if (!user || !user.token) {
         return '/login'; 
     }
 
-    // 3. Auth Check
-    if (!user || !user.role) return '/login'; // Instead of next('/login')
+    // Auth Check
+    if (!user || !user.role) return '/login';
 
     const bank = [
         { role: "director", routes: ["/dashboard/director","/dashboard/total-sales","/dashboard/stock-summary", "/dashboard/report", "/dashboard/user"] },
@@ -128,7 +128,7 @@ router.beforeEach((to, from) => {
     const userRole = user.role.toLowerCase();
     const roleConfig = bank.find(i => i.role === userRole);
 
-    // 5. Permission Check
+    // Permission Check
     if (roleConfig && roleConfig.routes.includes(to.path)) {
         return true; // Authorized
     } else {
@@ -137,17 +137,6 @@ router.beforeEach((to, from) => {
     }
 });
 
-
-// router.beforeEach((to, from) => {
-//     const userStore = useUserStore();
-    
-//     // If they aren't on /login and have no token, kick them out
-//     if (to.path !== '/login' && !userStore.user.token) {
-//         return '/login';
-//     }
-    
-//     return true;
-// });
 
 
 export default router
