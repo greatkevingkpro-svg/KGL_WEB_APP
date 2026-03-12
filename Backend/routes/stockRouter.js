@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 /**
- * GET ALL STOCK: View everything in the warehouse
+ * GET ALL STOCK: View everything in the database
  */
 router.get("/", async (req, res) => {
     try {

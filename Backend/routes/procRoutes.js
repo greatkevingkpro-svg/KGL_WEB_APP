@@ -237,17 +237,17 @@ router.post("/", async (req, res, next) => {
     });
     const savedProcurement = await procurement.save();
 
-    // 3. Update Stock (NO REGEX HERE)
+    // 3. Update Stock
     const updatedStock = await stockModel.findOneAndUpdate(
       { 
-        produceName: cleanName, // Exact match only
+        produceName: cleanName,
         branch: cleanBranch 
       },
       {
         $inc: { tonnage: numericTonnage },
         $set: { sellingPrice: numericPrice }
       },
-      { upsert: true, new: true } // This will now work perfectly
+      { upsert: true, new: true }
     );
 
     res.status(201).json({

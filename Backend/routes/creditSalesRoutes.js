@@ -219,7 +219,7 @@ router.post("/", async (req, res, next) => {
       });
     }
 
-    // Record the Credit Sale using my creditSalesModel
+    // Record the Credit Sale
     let creditSales = new creditSalesModel(body);
 
     console.log("Stock Found:", stock)
@@ -240,7 +240,7 @@ router.post("/", async (req, res, next) => {
     );
 
     if (!updatedStock) {
-      // If this logs, the names in your Stock collection don't match your Form
+      // If this logs, the names in Stock collection don't match Form
       console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
       return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }

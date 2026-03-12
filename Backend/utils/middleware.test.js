@@ -5,7 +5,7 @@ const { authMiddleware } = require("../middleware/authMiddleware.js");
 const { authorizeRoles } = require("../middleware/authorizeRoles.js");
 const jwt = require("jsonwebtoken");
 
-require("dotenv").config(); // make sure JWT_SECRET_KEY is loaded
+require("dotenv").config();
 
 describe("authMiddleware unit tests", () => {
   let req, res, next;

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const { userModel } = require("./UsersModels.js"); // adjust path
+const { userModel } = require("./UsersModels.js");
 
 const URI = process.env.KGL_DB_URI;
 
