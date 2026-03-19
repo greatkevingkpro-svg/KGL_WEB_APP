@@ -15,6 +15,7 @@ const form = reactive({
 });
 
 const isLoading = ref(false);
+const isPasswordVisible = ref(false);
 
 async function login() {
     try {
@@ -83,13 +84,13 @@ async function login() {
                     <label for="floatingInput">username</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" v-model="form.password" class="form-control" id="password"
+                    <input :type="isPasswordVisible ? 'text' : 'password'"  v-model="form.password" class="form-control" id="password"
                         placeholder="Password" required>
                     <label for="floatingPassword">Password</label>
 
                     <!-- toggle password -->
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="checkbox">
+                        <input type="checkbox" class="form-check-input" id="checkbox" v-model="isPasswordVisible">
                         <label class="form-check-label text-white" for="exampleCheck1">show password</label>
                     </div>
                 </div>
@@ -114,8 +115,6 @@ body {
 
 .login-container {
     background: url(../assets/images/cabbage.jpg);
-    /* background: url(../Logo_Pic/Beans_2.jpg); */
-    /* background: url(Maize_1.jpg); */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -154,14 +153,16 @@ body {
 }
 
 .login-card input {
-    /* width: 94%; */
-    /* padding: 10px 12px; */
     margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.25);
     border: none;
     border-radius: 8px;
     color: white;
     cursor: pointer;
+}
+
+#checkbox {
+    border-radius: 0;
 }
 
 .login-card button,
@@ -197,41 +198,4 @@ body {
     border-radius: 50px;
 }
 
-/* #checkbox {
-  background-color: rgb(151, 149, 149);
-} */
-
-/* creating the toast */
-/* .toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    min-width: 250px;
-    padding: 15px 20px;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 14px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-
-    opacity: 0;
-    transform: translateX(50px);
-    transition: all 0.3s ease;
-    z-index: 1000;
-} */
-
-/* Show toast */
-/* .toast.show {
-    opacity: 1;
-    transform: translateX(0);
-} */
-
-/* Success */
-/* .toast.success {
-    background-color: #28a745;
-} */
-
-/* Error */
-/* .toast.error {
-    background-color: #dc3545;
-} */
 </style>

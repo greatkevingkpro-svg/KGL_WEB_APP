@@ -35,6 +35,7 @@ const stockError = ref("");
 watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) => {
     if (newName && newBranch) {
         try {
+			isLoading.value = true;
 			stockError.value = ""; 
             const response = await axios.get(`/api/stocks/${newBranch}/${newName}`);
             if (response.data) {
@@ -47,7 +48,9 @@ watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) 
             availableStock.value = null;
 			// Set the error message if the backend fails
             stockError.value = error.response?.data?.message || "Produce not found in this branch";
-        }
+        } finally {
+			isLoading.value = false;
+		}
     } else {
         stockError.value = "";
     }
@@ -142,7 +145,10 @@ async function submitCreditSales() {
 								<label for="produceName" class="form-label">Produce Name</label>
 								<input type="text" class="form-control" id="produceName" v-model="form.produceName"
 									placeholder="Enter produce name" required>
-								<small v-if="unitPrice" class="text-success">Unit Price: {{ unitPrice }} UgX/kg</small>
+								<div v-if="isLoading" class="text-success">
+									Searching Produce...
+								</div>
+								<div v-if="unitPrice" class="text-success">Unit Price: {{ unitPrice }} UgX/kg</div>
 								<div v-if="stockError" class="invalid-feedback d-block">
                                     {{ stockError }}
                                 </div>
@@ -153,7 +159,11 @@ async function submitCreditSales() {
 								<label for="tonnage" class="form-label">Tonnage (kg)</label>
 								<input type="number" class="form-control" id="tonnage" v-model="form.tonnage" min="0"
 									step="0.01" required>
-								<small v-if="availableStock !== null">Available: {{ availableStock }}kg</small>
+								<div v-if="availableStock !== null" class="text-success">Available: {{ availableStock }}kg</div>
+								<div v-if="availableStock !== null && form.tonnage > availableStock"
+                                    class="invalid-feedback d-block">
+                                    You cannot sell more than {{ availableStock }}kg!
+                                </div>
 							</div>
 
 							<!-- date -->

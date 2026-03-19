@@ -153,9 +153,6 @@ function setPage(page) {
 </script>
 
 
-
-
-
 <template>
 
     <!-- MAIN CONTENT -->
