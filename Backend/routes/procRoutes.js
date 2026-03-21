@@ -217,13 +217,13 @@ router.get("/:id", async (req, res, next) => {
  *                 type: string
  *                 description: The branch where the procurement took place
  */
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res) => {
   try {
     const { produceName, branch, tonnage, sellingPrice } = req.body;
 
-    // 1. NORMALIZE: Always store as Trimmed and TitleCase (or Lowercase)
-    const cleanName = produceName.trim(); 
-    const cleanBranch = branch.trim();
+    // 1. NORMALIZE: Always store as Trimmed and Lowercase
+    const cleanName = produceName.trim().toLowerCase();
+    const cleanBranch = branch.trim().toLowerCase();
     const numericTonnage = Number(tonnage);
     const numericPrice = Number(sellingPrice);
 
@@ -239,9 +239,9 @@ router.post("/", async (req, res, next) => {
 
     // 3. Update Stock
     const updatedStock = await stockModel.findOneAndUpdate(
-      { 
+      {
         produceName: cleanName,
-        branch: cleanBranch 
+        branch: cleanBranch
       },
       {
         $inc: { tonnage: numericTonnage },

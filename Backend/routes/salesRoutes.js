@@ -157,13 +157,13 @@ router.post("/", async (req, res, next) => {
   try {
     const body = req.body;
     const { produceName, branch, tonnage } = body;
+
+    const cleanName = produceName.trim().toLowerCase();
+    const cleanBranch = branch.trim().toLowerCase();
     const amountToSubtract = Number(tonnage);
 
     // Availability Check: Ensure store has enough produce
-    const stock = await stockModel.findOne({
-      produceName: { $regex: new RegExp(`^${produceName.trim()}$`, 'i') },
-      branch: { $regex: new RegExp(`^${branch.trim()}$`, 'i') }
-    });
+    const stock = await stockModel.findOne({ produceName: cleanName, branch: cleanBranch });
 
     if (!stock || stock.tonnage < tonnage) {
       return res.status(400).json({
@@ -178,15 +178,8 @@ router.post("/", async (req, res, next) => {
 
     const savedSales = await sales.save()
 
-    const cleanName = produceName.trim();
-    const cleanBranch = branch.trim();
-
     const updatedStock = await stockModel.findOneAndUpdate(
-      {
-        // This regex makes "beans" match "Beans"
-        produceName: { $regex: new RegExp(`^${cleanName}$`, 'i') },
-        branch: { $regex: new RegExp(`^${cleanBranch}$`, 'i') }
-      },
+      { produceName: cleanName, branch: cleanBranch },
       { $inc: { tonnage: -amountToSubtract } },
       { new: true } // 'new: true' is the Mongoose way for 'returnDocument: after'
     );
