@@ -6,7 +6,6 @@ import sidebarLayout from "../layout/sidebarLayout.vue";
 import roleDashboard from '../views/roleDashboard.vue';
 import totalSales from '@/views/totalSales.vue';
 import stockSummary from '@/views/stockSummary.vue';
-import reports from '@/views/reports.vue';
 import stockOverview from '@/views/stockOverview.vue';
 import procurement from '@/views/procurement.vue';
 import sales from '@/views/sales.vue';
@@ -14,11 +13,6 @@ import creditSales from '@/views/creditSales.vue';
 import salesHistory from '@/views/salesHistory.vue';
 import creditHistory from '@/views/creditHistory.vue';
 import { useUserStore } from '@/stores/userStore';
-
-
-
-
-
 
 
 const router = createRouter({
@@ -53,11 +47,6 @@ const router = createRouter({
 					path: "stock-summary",
 					name: "stock-summary",
 					component: stockSummary
-				},
-				{
-					path: "report",
-					name: "report",
-					component: reports
 				},
 				{
 					path: "stock-branch",
@@ -99,6 +88,7 @@ const router = createRouter({
 	],
 })
 
+
 router.beforeEach((to, from) => {
     // Cleanup Modals
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
@@ -120,7 +110,7 @@ router.beforeEach((to, from) => {
     if (!user || !user.role) return '/login';
 
     const bank = [
-        { role: "director", routes: ["/dashboard/director","/dashboard/total-sales","/dashboard/stock-summary", "/dashboard/report", "/dashboard/user"] },
+        { role: "director", routes: ["/dashboard/director","/dashboard/total-sales","/dashboard/stock-summary", "/dashboard/user"] },
         { role: "manager", routes: ["/dashboard/roleDashboard","/dashboard/stock-branch", "/dashboard/produce", "/dashboard/sales", "/dashboard/credit-sales", "/dashboard/sales-branch", "/dashboard/credit-branch", "/dashboard/user"] },
         { role: "sales agent", routes: ["/dashboard/roleDashboard","/dashboard/stock-branch", "/dashboard/sales", "/dashboard/credit-sales", "/dashboard/sales-branch", "/dashboard/credit-branch"] }
     ];
@@ -136,7 +126,6 @@ router.beforeEach((to, from) => {
         return '/login'; // Unauthorized
     }
 });
-
 
 
 export default router

@@ -68,17 +68,17 @@ onMounted(async () => {
 });
 
 function renderCharts() {
-    const salesCtx = document.getElementById('salesChart');
-    const stockCtx = document.getElementById('stockChart');
+    const salesChart = document.getElementById('salesChart');
+    const stockChart = document.getElementById('stockChart');
 
-    if (!salesCtx || !stockCtx) return;
+    if (!salesChart || !stockChart) return;
 
     // Destroy existing charts to prevent memory leaks if re-rendering
     if (salesChartInstance) salesChartInstance.destroy();
     if (stockChartInstance) stockChartInstance.destroy();
 
     // Line Chart: Sales Trend
-    salesChartInstance = new Chart(salesCtx, {
+    salesChartInstance = new Chart(salesChart, {
         type: 'line',
         data: {
             labels: branchSales.value.slice(-7).map(s => new Date(s.createdAt).toLocaleDateString()),
@@ -95,7 +95,7 @@ function renderCharts() {
     });
 
     // Bar Chart: Stock Distribution
-    stockChartInstance = new Chart(stockCtx, {
+    stockChartInstance = new Chart(stockChart, {
         type: 'bar',
         data: {
             labels: branchStock.value.map(s => s.produceName),

@@ -62,15 +62,15 @@ onMounted(async () => {
 });
 
 function renderCharts() {
-    const salesCtx = document.getElementById('branchSalesChart');
-    const stockCtx = document.getElementById('branchStockChart');
+    const salesChart = document.getElementById('branchSalesChart');
+    const stockChart = document.getElementById('branchStockChart');
 
-    if (!salesCtx || !stockCtx) return;
+    if (!salesChart || !stockChart) return;
 
     if (salesChartInstance) salesChartInstance.destroy();
     if (stockChartInstance) stockChartInstance.destroy();
 
-    salesChartInstance = new Chart(salesCtx, {
+    salesChartInstance = new Chart(salesChart, {
         type: 'line',
         data: {
             labels: branchSales.value.slice(-7).map(s => new Date(s.createdAt).toLocaleDateString()),
@@ -85,7 +85,7 @@ function renderCharts() {
         }
     });
 
-    stockChartInstance = new Chart(stockCtx, {
+    stockChartInstance = new Chart(stockChart, {
         type: 'bar',
         data: {
             labels: branchStock.value.map(s => s.produceName),

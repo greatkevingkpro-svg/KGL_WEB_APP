@@ -41,7 +41,7 @@ a svg {
 
 .nav-link:hover,
 .nav-link.active {
-  background-color: rgb(29, 214, 29);
+  background-color: rgb(5, 189, 103);
   border-radius: 5px;
   color: white;
 }
@@ -73,17 +73,17 @@ a svg {
 /* Sidebar default */
 .sidebar {
   width: 280px;
-  background: rgb(12, 146, 12);
+  background: rgb(25, 135, 84);
   height: 100vh;
-  position: sticky;
   /* keeps it sticky on large screens */
+  position: sticky;
   top: 0;
   overflow-y: auto;
   padding: 1rem;
-  transition: transform 0.3s ease, z-index 0s;
   /* smooth slide */
-  z-index: 1;
+  transition: transform 0.3s ease, z-index 0s;
   /* default */
+  z-index: 1;
 }
 
 /* Small screens: collapsed sidebar slides out */
@@ -95,32 +95,25 @@ a svg {
     left: 0;
     z-index: 1060;
     /* Force the hidden state */
-    transform: translateX(-100%); 
+    transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
   }
 
+  /* slide in */
   .sidebar.open {
     transform: translateX(0) !important;
-    /* slide in */
   }
 
-  /* Optional: overlay */
+  /* overlay */
   #sidebarOverlay {
     display: none;
-    /* JS will toggle */
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
     z-index: 1040;
-    /* just below sidebar */
+    cursor: pointer;
   }
 }
-
-
-/* .password-hidden {
-  -webkit-text-security: disc !important;
-  text-security: disc !important;
-} */
