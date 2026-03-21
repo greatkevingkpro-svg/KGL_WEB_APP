@@ -32,8 +32,8 @@ router.get("/", async (req, res) => {
 router.get("/:branch/:produceName", async (req, res) => {
   try {
     // const { branch, produceName } = req.params;
-    const branch = req.params.branch.trim().toLocaleLowerCase();
-    const produceName = req.params.produceName.trim()
+    const branch = req.params.branch.trim();
+    const produceName = req.params.produceName.trim().toLocaleLowerCase();
     const stock = await stockModel.findOne({branch, produceName});
 
     if (!stock) {
