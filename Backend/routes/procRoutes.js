@@ -223,7 +223,7 @@ router.post("/", async (req, res) => {
 
     // 1. NORMALIZE: Always store as Trimmed and Lowercase
     const cleanName = produceName.trim().toLowerCase();
-    const cleanBranch = branch.trim().toLowerCase();
+    const cleanBranch = branch.trim();
     const numericTonnage = Number(tonnage);
     const numericPrice = Number(sellingPrice);
 

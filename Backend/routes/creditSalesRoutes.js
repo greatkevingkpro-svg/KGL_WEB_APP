@@ -207,7 +207,7 @@ router.post("/", async (req, res, next) => {
     const { produceName, branch, tonnage } = body;
 
     const cleanName = produceName.trim().toLowerCase();
-    const cleanBranch = branch.trim().toLowerCase();
+    const cleanBranch = branch.trim();
     const amountToSubtract = Number(tonnage);
 
     // Check Store availability
