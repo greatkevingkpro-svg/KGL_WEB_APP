@@ -83,8 +83,8 @@ app.use("/api/auth", authRouter);
 app.use("/api", authMiddleware, protectedRouter);
 
 // use all the imported routers for related path
-protectedRouter.use("/procurements", procurementRouter);
 protectedRouter.use("/stocks", stockRouter);
+protectedRouter.use("/procurements", procurementRouter);
 protectedRouter.use("/sales", salesRouter);
 protectedRouter.use("/credit-sales", creditSales);
 protectedRouter.use("/users", usersRouter);
