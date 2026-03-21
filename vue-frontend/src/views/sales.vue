@@ -29,9 +29,17 @@ const stockError = ref("");
 watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) => {
     if (newName && newBranch) {
         try {
-            isLoading.value = true
+            isLoading.value = true;
             stockError.value = "";
-            const response = await axios.get(`/api/stocks/${newBranch}/${newName}`);
+
+            // CLEAN HERE: Send lowercase to the backend GET route
+            const cleanName = newName.trim().toLowerCase();
+            const cleanBranch = newBranch.trim();
+
+            console.log(`Fetching: /api/stocks/${cleanBranch}/${cleanName}`);
+
+            const response = await axios.get(`/api/stocks/${cleanBranch}/${cleanName}`);
+
             if (response.data) {
                 unitPrice.value = response.data.sellingPrice;
                 availableStock.value = response.data.tonnage;
@@ -40,13 +48,10 @@ watch([() => form.produceName, () => form.branch], async ([newName, newBranch]) 
         } catch (error) {
             unitPrice.value = 0;
             availableStock.value = null;
-            // Set the error message if the backend fails
-            stockError.value = error.response?.data?.message || "Produce not found in this branch";
+            stockError.value = "Produce not found in this branch";
         } finally {
-            isLoading.value = false
+            isLoading.value = false;
         }
-    } else {
-        stockError.value = "";
     }
 });
 
@@ -64,21 +69,27 @@ async function submitSale() {
 
     try {
         isLoading.value = true;
-        await salesStore.recordNewSale({ ...form, tonnage: saleWeight });
 
-        // console.log(typeof form.produceName.valueOf());
+        // CLEAN HERE: Ensure the data saved to 'Sales' is also lowercase
+        const dataToSave = {
+            ...form,
+            produceName: form.produceName.trim().toLowerCase(),
+            branch: form.branch.trim(),
+            tonnage: saleWeight
+        };
 
-        // Refresh the stock store
+        await salesStore.recordNewSale(dataToSave);
         await stockStore.fetchStockForAllBranches();
 
-        toast.success("Sale completed and stock updated!");
+        toast.success("Sale completed!");
 
+        // Reset form
         form.produceName = "";
         form.tonnage = "";
-        form.amountPaid = "";
-        form.buyerName = "";
+        // ... rest of reset
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        toast.error("Sale failed to record");
     } finally {
         isLoading.value = false;
     }
@@ -115,7 +126,7 @@ async function submitSale() {
                                 <input type="number" class="form-control" id="tonnage" v-model.number="form.tonnage"
                                     min="0.01" step="0.01" required>
                                 <div v-if="availableStock !== null" class="text-success">Available: {{ availableStock
-                                }}kg</div>
+                                    }}kg</div>
                                 <div v-if="availableStock !== null && form.tonnage > availableStock"
                                     class="invalid-feedback d-block">
                                     You cannot sell more than {{ availableStock }}kg!
