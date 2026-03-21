@@ -181,7 +181,7 @@ router.post("/", async (req, res, next) => {
     const updatedStock = await stockModel.findOneAndUpdate(
       { produceName: cleanName, branch: cleanBranch },
       { $inc: { tonnage: -amountToSubtract } },
-      { new: true } // 'new: true' is the Mongoose way for 'returnDocument: after'
+      { returnDocument: 'after' } 
     );
 
     if (!updatedStock) {

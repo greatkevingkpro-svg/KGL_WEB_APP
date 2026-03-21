@@ -247,7 +247,7 @@ router.post("/", async (req, res) => {
         $inc: { tonnage: numericTonnage },
         $set: { sellingPrice: numericPrice }
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     res.status(201).json({

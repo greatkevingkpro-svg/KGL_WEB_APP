@@ -3,6 +3,11 @@ const { stockModel } = require("../models/stockModel.js");
 
 const router = express.Router();
 
+router.use((req, res, next) => {
+  console.log(`Stock Router hit: ${req.method} ${req.url}`);
+  next();
+});
+
 
 /**
  * GET ALL STOCK: View everything in the database

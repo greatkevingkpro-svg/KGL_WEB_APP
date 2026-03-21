@@ -235,7 +235,7 @@ router.post("/", async (req, res, next) => {
         branch: cleanBranch
       },
       { $inc: { tonnage: -amountToSubtract } },
-      { new: true } // 'new: true' is the Mongoose way for 'returnDocument: after'
+      { returnDocument: 'after' } // 'new: true' is the Mongoose way for 'returnDocument: after'
     );
 
     if (!updatedStock) {
