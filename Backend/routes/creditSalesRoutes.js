@@ -208,7 +208,7 @@ router.post("/", async (req, res, next) => {
 
     const cleanName = produceName.trim().toLowerCase();
     const cleanBranch = branch.trim();
-    const amountToSubtract = Number(tonnage);
+    const amountToSubtract = Number(req.body.tonnage);
 
     // Check Store availability
     const stock = await stockModel.findOne({
@@ -228,6 +228,11 @@ router.post("/", async (req, res, next) => {
     console.log("Stock Found:", stock)
 
     const savedcreditSales = await creditSales.save()
+
+    // checks: if it's not a number, the update will fail
+    if (isNaN(amountToSubtract)) {
+      return res.status(400).json({ message: "Invalid tonnage value" });
+    }
 
     const updatedStock = await stockModel.findOneAndUpdate(
       {
