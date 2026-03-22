@@ -223,13 +223,6 @@ router.post("/", async (req, res, next) => {
       });
     }
 
-    // Record the Credit Sale
-    let creditSales = new creditSalesModel(body);
-
-    console.log("Stock Found:", stock)
-
-    const savedcreditSales = await creditSales.save()
-
     // MANUAL CALCULATION 
     const currentTonnage = Number(stock.tonnage);
     // Use Math.round 
@@ -241,7 +234,7 @@ router.post("/", async (req, res, next) => {
     }
 
     const updatedStock = await stockModel.findOneAndUpdate(
-      stock._id,
+      { _id: stock._id },
       // {
       //   produceName: cleanName,
       //   branch: cleanBranch
@@ -256,6 +249,14 @@ router.post("/", async (req, res, next) => {
       console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
       return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }
+
+    // Record the Credit Sale
+    let creditSales = new creditSalesModel(body);
+
+    console.log("Stock Found:", stock)
+
+    const savedcreditSales = await creditSales.save()
+
 
     console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 

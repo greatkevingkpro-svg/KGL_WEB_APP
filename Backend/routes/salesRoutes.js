@@ -172,13 +172,6 @@ router.post("/", async (req, res, next) => {
       });
     }
 
-    // Record Sale using salesModel
-    const sales = new salesModel(body);
-
-    console.log("Stock Found:", stock)
-
-    const savedSales = await sales.save()
-
     // manual calculation for reducing stock
     const currentTonnage = Number(stock.tonnage);
     // using Math.round
@@ -190,7 +183,7 @@ router.post("/", async (req, res, next) => {
     }
 
     const updatedStock = await stockModel.findOneAndUpdate(
-      stock._id,
+      { _id: stock._id },
       // { produceName: cleanName, branch: cleanBranch },
       // { $inc: { tonnage: -amountToSubtract } },
       { $set: { tonnage: newTonnage } },
@@ -202,6 +195,13 @@ router.post("/", async (req, res, next) => {
       console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
       return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }
+
+    // Record Sale using salesModel
+    const sales = new salesModel(body);
+
+    console.log("Stock Found:", stock)
+
+    const savedSales = await sales.save()
 
     console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 
