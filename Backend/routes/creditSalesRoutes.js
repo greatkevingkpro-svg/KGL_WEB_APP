@@ -233,7 +233,7 @@ router.post("/", async (req, res, next) => {
       return res.status(400).json({ message: "Invalid tonnage value" });
     }
 
-    const updatedStock = await stockModel.findOneAndUpdate(
+    const updatedStock = await stockModel.findByIdAndUpdate(
       { _id: stock._id },
       // {
       //   produceName: cleanName,
