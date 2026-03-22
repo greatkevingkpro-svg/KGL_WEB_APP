@@ -203,12 +203,13 @@ router.get("/:id", async (req, res, next) => {
  */
 router.post("/", async (req, res, next) => {
   try {
-    const body = req.body;
-    const { produceName, branch, tonnage } = body;
+    // const body = req.body;
+    const { produceName, branch, tonnage } = req.body;
 
     const cleanName = produceName.trim().toLowerCase();
     const cleanBranch = branch.trim();
-    const amountToSubtract = Number(req.body.tonnage);
+    const amountToSubtract = Number(tonnage);
+    // const amountToSubtract = Number(req.body.tonnage);
 
     // Check Store availability
     const stock = await stockModel.findOne({
@@ -229,18 +230,25 @@ router.post("/", async (req, res, next) => {
 
     const savedcreditSales = await creditSales.save()
 
+    // MANUAL CALCULATION 
+    const currentTonnage = Number(stock.tonnage);
+    // Use Math.round 
+    const newTonnage = Math.round(currentTonnage - amountToSubtract)
+
     // checks: if it's not a number, the update will fail
     if (isNaN(amountToSubtract)) {
       return res.status(400).json({ message: "Invalid tonnage value" });
     }
 
     const updatedStock = await stockModel.findOneAndUpdate(
-      {
-        produceName: cleanName,
-        branch: cleanBranch
-      },
-      { $inc: { tonnage: -amountToSubtract } },
-      { returnDocument: 'after' } // 'new: true' is the Mongoose way for 'returnDocument: after'
+      stock._id,
+      // {
+      //   produceName: cleanName,
+      //   branch: cleanBranch
+      // },
+      // { $inc: { tonnage: -amountToSubtract } },
+      { $set: { tonnage: newTonnage } },
+      { returnDocument: 'after' }
     );
 
     if (!updatedStock) {
@@ -248,6 +256,8 @@ router.post("/", async (req, res, next) => {
       console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
       return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }
+
+    console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 
 
     res.status(201).json({ message: "Credit sale successful. Produce removed from store.", data: savedcreditSales })

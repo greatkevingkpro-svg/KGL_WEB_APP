@@ -155,12 +155,13 @@ router.get("/:id", async (req, res, next) => {
  */
 router.post("/", async (req, res, next) => {
   try {
-    const body = req.body;
-    const { produceName, branch, tonnage } = body;
+    // const body = req.body;
+    const { produceName, branch, tonnage } = req.body;
 
     const cleanName = produceName.trim().toLowerCase();
     const cleanBranch = branch.trim();
-    const amountToSubtract = Number(req.body.tonnage);
+    const amountToSubtract = Number(tonnage);
+    // const amountToSubtract = Number(req.body.tonnage);
 
     // Availability Check: Ensure store has enough produce
     const stock = await stockModel.findOne({ produceName: cleanName, branch: cleanBranch });
@@ -178,22 +179,31 @@ router.post("/", async (req, res, next) => {
 
     const savedSales = await sales.save()
 
+    // manual calculation for reducing stock
+    const currentTonnage = Number(stock.tonnage);
+    // using Math.round
+    const newTonnage = Math.round(currentTonnage - amountToSubtract);
+
     // checks: if it's not a number, the update will fail
     if (isNaN(amountToSubtract)) {
       return res.status(400).json({ message: "Invalid tonnage value" });
     }
 
     const updatedStock = await stockModel.findOneAndUpdate(
-      { produceName: cleanName, branch: cleanBranch },
-      { $inc: { tonnage: -amountToSubtract } },
+      stock._id,
+      // { produceName: cleanName, branch: cleanBranch },
+      // { $inc: { tonnage: -amountToSubtract } },
+      { $set: { tonnage: newTonnage } },
       { returnDocument: 'after' }
     );
 
     if (!updatedStock) {
-      // If this logs, the names in your Stock collection don't match your Form
+      // If this logs, the names in Stock collection don't match the ones in the Form
       console.error(`NOT FOUND: Looking for "${cleanName}" in "${cleanBranch}"`);
       return res.status(404).json({ message: "Stock record not found. Check name casing." });
     }
+
+    console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 
     res.status(201).json({ message: "Sale successful", remainingStock: updatedStock.tonnage });
 
