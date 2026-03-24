@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose")
 const { creditSalesModel } = require("../models/CreditSalesModels.js");
 const { stockModel } = require("../models/stockModel.js")
 const { KGLErrors } = require("../utils/customError.js");
@@ -202,7 +203,10 @@ router.get("/:id", async (req, res, next) => {
  *                 description: The dispatch date for the credit sale record.
  */
 router.post("/", async (req, res, next) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
     // const body = req.body;
     const { produceName, branch, tonnage } = req.body;
 
@@ -217,10 +221,11 @@ router.post("/", async (req, res, next) => {
     }
 
     // Check Store availability
-    const stock = await stockModel.findOne({
-      produceName: cleanName,
-      branch: cleanBranch
-    });
+    const stock = await stockModel.findOne(
+      { produceName: cleanName, branch: cleanBranch },
+      null,
+      { session }
+    );
 
     if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
@@ -237,7 +242,7 @@ router.post("/", async (req, res, next) => {
     const updatedStock = await stockModel.findByIdAndUpdate(
       stock._id,
       { $inc: { tonnage: -amountToSubtract } },
-      { new: true }
+      { new: true, session }
     );
 
     /*
@@ -263,18 +268,27 @@ router.post("/", async (req, res, next) => {
     // Record the Credit Sale
     // let creditSales = new creditSalesModel(body);
     let creditSales = new creditSalesModel(req.body);
+    await creditSales.save({ session })
 
-    console.log("Stock Found:", stock)
+    // Commit transaction
+    await session.commitTransaction();
+    session.endSession();
 
-    const savedcreditSales = await creditSales.save()
+    // console.log("Stock Found:", stock)
+
+    // const savedcreditSales = await creditSales.save()
 
 
-    console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
+    // console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 
 
     res.status(201).json({ message: "Credit sale successful. Produce removed from store.", data: savedcreditSales })
 
   } catch (error) {
+    // rollback everything if ANY step fails
+    await session.abortTransaction();
+    session.endSession();
+
     console.error("Error saving credit sales:", error);
     res.status(500).json({ message: "There was an error saving credit sales data", error: error.message });
   }

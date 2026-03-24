@@ -40,7 +40,7 @@ let creditSalesSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     match: /^[a-zA-Z0-9 ]+$/, // allows letters, numbers, and spaces
-    message: "Agent name must be alphanumeric and at least 2 characters"
+    message: "produce name must be alphanumeric and at least 2 characters"
   },
   tonnage: {
     type: Number,

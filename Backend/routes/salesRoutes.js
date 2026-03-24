@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose")
 const { salesModel } = require("../models/SalesModels.js");
 const { stockModel } = require("../models/stockModel.js")
 const { KGLErrors } = require("../utils/customError.js");
@@ -154,7 +155,11 @@ router.get("/:id", async (req, res, next) => {
  *                 description: The time the purchase was made (in HH:mm format)
  */
 router.post("/", async (req, res, next) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     // const body = req.body;
     const { produceName, branch, tonnage } = req.body;
 
@@ -169,7 +174,11 @@ router.post("/", async (req, res, next) => {
     }
 
     // Availability Check: Ensure store has enough produce
-    const stock = await stockModel.findOne({ produceName: cleanName, branch: cleanBranch });
+    const stock = await stockModel.findOne(
+      { produceName: cleanName, branch: cleanBranch },
+      null,
+      { session }
+    );
 
     if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
@@ -186,7 +195,7 @@ router.post("/", async (req, res, next) => {
     const updatedStock = await stockModel.findByIdAndUpdate(
       stock._id,
       { $inc: { tonnage: -amountToSubtract } },
-      { new: true }
+      { new: true, session }
     );
 
     /*
@@ -210,16 +219,23 @@ router.post("/", async (req, res, next) => {
     // Record Sale using salesModel
     // const sales = new salesModel(body);
     const sales = new salesModel(req.body);
+    await sales.save({ session })
 
-    console.log("Stock Found:", stock)
+    // Commit transaction
+    await session.commitTransaction();
+    session.endSession();
 
-    const savedSales = await sales.save()
-
-    console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
+    // console.log("Stock Found:", stock)
+    // const savedSales = await sales.save()
+    // console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 
     res.status(201).json({ message: "Sale successful", remainingStock: updatedStock.tonnage });
 
   } catch (error) {
+    // rollback everything if ANY step fails
+    await session.abortTransaction();
+    session.endSession();
+
     console.error("Error saving sales:", error);
     res.status(500).json({ message: "There was an error saving sales data", error: error.message });
   }
