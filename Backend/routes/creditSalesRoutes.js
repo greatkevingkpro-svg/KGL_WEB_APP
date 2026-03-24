@@ -233,6 +233,10 @@ router.post("/", async (req, res, next) => {
       });
     }
 
+    console.log("Incoming:", { produceName, branch, tonnage });
+    console.log("Cleaned:", { cleanName, cleanBranch, amountToSubtract });
+    console.log("Stock Found:", stock);
+
     // MANUAL CALCULATION 
     // const currentTonnage = Number(stock.tonnage);
     // Use Math.round 
@@ -244,6 +248,8 @@ router.post("/", async (req, res, next) => {
       { $inc: { tonnage: -amountToSubtract } },
       { new: true, session }
     );
+
+    console.log("Updated Stock:", updatedStock);
 
     /*
     const updatedStock = await stockModel.findByIdAndUpdate(
