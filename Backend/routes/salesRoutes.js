@@ -163,32 +163,43 @@ router.post("/", async (req, res, next) => {
     const amountToSubtract = Number(tonnage);
     // const amountToSubtract = Number(req.body.tonnage);
 
+    // checks: if it's not a number, the update will fail
+    if (isNaN(amountToSubtract)) {
+      return res.status(400).json({ message: "Invalid tonnage value" });
+    }
+
     // Availability Check: Ensure store has enough produce
     const stock = await stockModel.findOne({ produceName: cleanName, branch: cleanBranch });
 
-    if (!stock || stock.tonnage < tonnage) {
+    if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
         message: `Insufficient stock at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.`
       });
     }
 
     // manual calculation for reducing stock
-    const currentTonnage = Number(stock.tonnage);
+    // const currentTonnage = Number(stock.tonnage);
     // using Math.round
-    const newTonnage = Math.round(currentTonnage - amountToSubtract);
+    // const newTonnage = Math.round(currentTonnage - amountToSubtract);
 
-    // checks: if it's not a number, the update will fail
-    if (isNaN(amountToSubtract)) {
-      return res.status(400).json({ message: "Invalid tonnage value" });
-    }
 
     const updatedStock = await stockModel.findByIdAndUpdate(
-      { _id: stock._id },
+      stock._id,
+      { $inc: { tonnage: -amountToSubtract } },
+      { new: true }
+    );
+
+    /*
+    const updatedStock = await stockModel.findByIdAndUpdate(
+      // { _id: stock._id },
       // { produceName: cleanName, branch: cleanBranch },
       // { $inc: { tonnage: -amountToSubtract } },
+      stock._id,
       { $set: { tonnage: newTonnage } },
-      { returnDocument: 'after' }
+      { new: true }
+      // { returnDocument: 'after' }
     );
+    */
 
     if (!updatedStock) {
       // If this logs, the names in Stock collection don't match the ones in the Form
@@ -197,7 +208,8 @@ router.post("/", async (req, res, next) => {
     }
 
     // Record Sale using salesModel
-    const sales = new salesModel(body);
+    // const sales = new salesModel(body);
+    const sales = new salesModel(req.body);
 
     console.log("Stock Found:", stock)
 

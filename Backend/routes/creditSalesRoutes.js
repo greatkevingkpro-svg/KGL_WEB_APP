@@ -211,38 +211,48 @@ router.post("/", async (req, res, next) => {
     const amountToSubtract = Number(tonnage);
     // const amountToSubtract = Number(req.body.tonnage);
 
+    // checks: if it's not a number, the update will fail
+    if (isNaN(amountToSubtract)) {
+      return res.status(400).json({ message: "Invalid tonnage value" });
+    }
+
     // Check Store availability
     const stock = await stockModel.findOne({
       produceName: cleanName,
       branch: cleanBranch
     });
 
-    if (!stock || stock.tonnage < tonnage) {
+    if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
         message: `Insufficient stock for credit at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.`
       });
     }
 
     // MANUAL CALCULATION 
-    const currentTonnage = Number(stock.tonnage);
+    // const currentTonnage = Number(stock.tonnage);
     // Use Math.round 
-    const newTonnage = Math.round(currentTonnage - amountToSubtract)
+    // const newTonnage = Math.round(currentTonnage - amountToSubtract)
 
-    // checks: if it's not a number, the update will fail
-    if (isNaN(amountToSubtract)) {
-      return res.status(400).json({ message: "Invalid tonnage value" });
-    }
 
     const updatedStock = await stockModel.findByIdAndUpdate(
-      { _id: stock._id },
+      stock._id,
+      { $inc: { tonnage: -amountToSubtract } },
+      { new: true }
+    );
+
+    /*
+    const updatedStock = await stockModel.findByIdAndUpdate(
+      stock._id,
       // {
       //   produceName: cleanName,
       //   branch: cleanBranch
       // },
       // { $inc: { tonnage: -amountToSubtract } },
       { $set: { tonnage: newTonnage } },
-      { returnDocument: 'after' }
+      { new: true }
+      // { returnDocument: 'after' }
     );
+    */
 
     if (!updatedStock) {
       // If this logs, the names in Stock collection don't match Form
@@ -251,7 +261,8 @@ router.post("/", async (req, res, next) => {
     }
 
     // Record the Credit Sale
-    let creditSales = new creditSalesModel(body);
+    // let creditSales = new creditSalesModel(body);
+    let creditSales = new creditSalesModel(req.body);
 
     console.log("Stock Found:", stock)
 
