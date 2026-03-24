@@ -53,9 +53,9 @@ const getStatus = (tonnage) => {
             <thead>
                 <tr>
                     <th>Produce</th>
-                    <th>Type</th>
+
                     <th>Tonnage</th>
-                    <th>Cost</th>
+
                     <th>Price</th>
                     <th>Status</th>
                 </tr>
@@ -63,9 +63,9 @@ const getStatus = (tonnage) => {
             <tbody>
                 <tr v-for="item in maganjoData" :key="item.id">
                     <td>{{ item.produceName }}</td>
-                    <td>{{ item.produceType }}</td>
+                    <!-- <td>{{ item.produceType }}</td> -->
                     <td>{{ item.tonnage }}</td>
-                    <td>{{ item.cost }}</td>
+                    <!-- <td>{{ item.cost }}</td> -->
                     <td>{{ item.sellingPrice }}</td>
                     <td>
                         <!-- Dynamic Status Badge -->
