@@ -102,12 +102,14 @@ router.beforeEach((to, from) => {
     if (to.path === '/login') return true;
 
 	// CRITICAL: If no token, they CANNOT enter any other page
-    if (!user || !user.token) {
+    if (!user.token) {
         return '/login'; 
     }
 
     // Auth Check
-    if (!user || !user.role) return '/login';
+    if (!user.role) {
+		return '/login';
+	}
 
     const bank = [
         { role: "director", routes: ["/dashboard/director","/dashboard/total-sales","/dashboard/stock-summary", "/dashboard/user"] },
@@ -118,13 +120,17 @@ router.beforeEach((to, from) => {
     const userRole = user.role.toLowerCase();
     const roleConfig = bank.find(i => i.role === userRole);
 
+	if (!roleConfig) {
+        return '/login';
+    }
+
     // Permission Check
     if (roleConfig && roleConfig.routes.includes(to.path)) {
         return true; // Authorized
-    } else {
-        console.warn(`Denied: ${userRole} tried to access ${to.path}`);
-        return '/login'; // Unauthorized
     }
+        
+	console.warn(`Denied: ${userRole} tried to access ${to.path}`);
+    return '/login'; // Unauthorized
 });
 
 

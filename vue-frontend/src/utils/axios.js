@@ -13,7 +13,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
         const userStore = useUserStore();
-        if(userStore.user.token) {
+        if(userStore.user?.token) {
             config.headers.Authorization = `Bearer ${userStore.user.token}`;
         }
     
