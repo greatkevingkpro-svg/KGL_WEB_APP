@@ -170,15 +170,23 @@ router.post("/", async (req, res, next) => {
 
     // checks: if it's not a number, the update will fail
     if (isNaN(amountToSubtract)) {
+      await session.abortTransaction();
+      session.endSession();
+
       return res.status(400).json({ message: "Invalid tonnage value" });
     }
 
     // Availability Check: Ensure store has enough produce
     const stock = await stockModel.findOne(
-      { produceName: cleanName, branch: cleanBranch },
+      {
+        produceName: { $regex: `^${cleanName}$`, $options: "i" },
+        branch: { $regex: `^${cleanBranch}$`, $options: "i" }
+      },
       null,
       { session }
     );
+
+    console.log("Stock Found:", stock);
 
     if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
@@ -188,7 +196,6 @@ router.post("/", async (req, res, next) => {
 
     console.log("Incoming:", { produceName, branch, tonnage });
     console.log("Cleaned:", { cleanName, cleanBranch, amountToSubtract });
-    console.log("Stock Found:", stock);
 
     // manual calculation for reducing stock
     // const currentTonnage = Number(stock.tonnage);

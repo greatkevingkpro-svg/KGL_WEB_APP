@@ -222,10 +222,15 @@ router.post("/", async (req, res, next) => {
 
     // Check Store availability
     const stock = await stockModel.findOne(
-      { produceName: cleanName, branch: cleanBranch },
+      {
+        produceName: { $regex: `^${cleanName}$`, $options: "i" },
+        branch: { $regex: `^${cleanBranch}$`, $options: "i" }
+      },
       null,
       { session }
     );
+
+    console.log("Stock Found:", stock);
 
     if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
@@ -235,7 +240,7 @@ router.post("/", async (req, res, next) => {
 
     console.log("Incoming:", { produceName, branch, tonnage });
     console.log("Cleaned:", { cleanName, cleanBranch, amountToSubtract });
-    console.log("Stock Found:", stock);
+    // console.log("Stock Found:", stock);
 
     // MANUAL CALCULATION 
     // const currentTonnage = Number(stock.tonnage);
