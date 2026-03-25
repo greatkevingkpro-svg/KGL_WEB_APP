@@ -221,13 +221,12 @@ router.post("/", async (req, res) => {
   try {
     const { produceName, branch, tonnage, sellingPrice } = req.body;
 
-    // 1. NORMALIZE: Always store as Trimmed and Lowercase
     const cleanName = produceName.trim().toLowerCase();
     const cleanBranch = branch.trim();
     const numericTonnage = Number(tonnage);
     const numericPrice = Number(sellingPrice);
 
-    // 2. Save Procurement record
+    // Save Procurement record
     const procurement = new procurementModel({
       ...req.body,
       produceName: cleanName,
@@ -237,7 +236,7 @@ router.post("/", async (req, res) => {
     });
     const savedProcurement = await procurement.save();
 
-    // 3. Update Stock
+    // Update Stock
     const updatedStock = await stockModel.findOneAndUpdate(
       {
         produceName: cleanName,

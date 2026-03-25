@@ -63,6 +63,8 @@ const router = express.Router();
  *                     description: The dispatch date for the credit sale record.
  */
 router.get("/", async (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+
   try {
     let creditSales = await creditSalesModel.find({});
     res.status(200).json(creditSales)
@@ -132,10 +134,11 @@ router.get("/", async (req, res, next) => {
  *                   description: The dispatch date for the credit sale record.
  */
 router.get("/:id", async (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   let id = req.params.id;
 
   if (id.length < 5) {
-    next(new KGLErrors("invvalid id signature", 400));
+    return next(new KGLErrors("invvalid id signature", 400));
   }
 
   try {
@@ -205,15 +208,16 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const session = await mongoose.startSession();
 
+  res.set('Cache-Control', 'no-store');
+
   try {
     session.startTransaction();
-    // const body = req.body;
+
     const { produceName, branch, tonnage } = req.body;
 
     const cleanName = produceName.trim().toLowerCase();
     const cleanBranch = branch.trim();
     const amountToSubtract = Number(tonnage);
-    // const amountToSubtract = Number(req.body.tonnage);
 
     // checks: if it's not a number, the update will fail
     if (isNaN(amountToSubtract)) {
@@ -230,45 +234,19 @@ router.post("/", async (req, res, next) => {
       { session }
     );
 
-    console.log("Stock Found:", stock);
-
     if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
         message: `Insufficient stock for credit at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.`
       });
     }
 
-    console.log("Incoming:", { produceName, branch, tonnage });
-    console.log("Cleaned:", { cleanName, cleanBranch, amountToSubtract });
-    // console.log("Stock Found:", stock);
-
-    // MANUAL CALCULATION 
-    // const currentTonnage = Number(stock.tonnage);
-    // Use Math.round 
-    // const newTonnage = Math.round(currentTonnage - amountToSubtract)
-
-
+    // update stock after sale
     const updatedStock = await stockModel.findByIdAndUpdate(
       stock._id,
       { $inc: { tonnage: -amountToSubtract } },
       { new: true, session }
     );
 
-    console.log("Updated Stock:", updatedStock);
-
-    /*
-    const updatedStock = await stockModel.findByIdAndUpdate(
-      stock._id,
-      // {
-      //   produceName: cleanName,
-      //   branch: cleanBranch
-      // },
-      // { $inc: { tonnage: -amountToSubtract } },
-      { $set: { tonnage: newTonnage } },
-      { new: true }
-      // { returnDocument: 'after' }
-    );
-    */
 
     if (!updatedStock) {
       // If this logs, the names in Stock collection don't match Form
@@ -277,7 +255,6 @@ router.post("/", async (req, res, next) => {
     }
 
     // Record the Credit Sale
-    // let creditSales = new creditSalesModel(body);
     let creditSales = new creditSalesModel(req.body);
     await creditSales.save({ session })
 
@@ -285,15 +262,7 @@ router.post("/", async (req, res, next) => {
     await session.commitTransaction();
     session.endSession();
 
-    // console.log("Stock Found:", stock)
-
-    // const savedcreditSales = await creditSales.save()
-
-
-    // console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
-
-
-    res.status(201).json({ message: "Credit sale successful. Produce removed from store.", data: savedcreditSales })
+    res.status(201).json({ message: "Credit sale successful. Produce removed from store.", data: creditSales })
 
   } catch (error) {
     // rollback everything if ANY step fails

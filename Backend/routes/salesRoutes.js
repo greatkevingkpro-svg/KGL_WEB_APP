@@ -160,13 +160,11 @@ router.post("/", async (req, res, next) => {
   try {
     session.startTransaction();
 
-    // const body = req.body;
     const { produceName, branch, tonnage } = req.body;
 
     const cleanName = produceName.trim().toLowerCase();
     const cleanBranch = branch.trim();
     const amountToSubtract = Number(tonnage);
-    // const amountToSubtract = Number(req.body.tonnage);
 
     // checks: if it's not a number, the update will fail
     if (isNaN(amountToSubtract)) {
@@ -186,42 +184,18 @@ router.post("/", async (req, res, next) => {
       { session }
     );
 
-    console.log("Stock Found:", stock);
-
     if (!stock || stock.tonnage < amountToSubtract) {
       return res.status(400).json({
         message: `Insufficient stock at ${branch}. Available: ${stock ? stock.tonnage : 0}kg.`
       });
     }
 
-    console.log("Incoming:", { produceName, branch, tonnage });
-    console.log("Cleaned:", { cleanName, cleanBranch, amountToSubtract });
-
-    // manual calculation for reducing stock
-    // const currentTonnage = Number(stock.tonnage);
-    // using Math.round
-    // const newTonnage = Math.round(currentTonnage - amountToSubtract);
-
-
+    // update the stock after sale
     const updatedStock = await stockModel.findByIdAndUpdate(
       stock._id,
       { $inc: { tonnage: -amountToSubtract } },
       { new: true, session }
     );
-
-    console.log("Updated Stock:", updatedStock);
-
-    /*
-    const updatedStock = await stockModel.findByIdAndUpdate(
-      // { _id: stock._id },
-      // { produceName: cleanName, branch: cleanBranch },
-      // { $inc: { tonnage: -amountToSubtract } },
-      stock._id,
-      { $set: { tonnage: newTonnage } },
-      { new: true }
-      // { returnDocument: 'after' }
-    );
-    */
 
     if (!updatedStock) {
       // If this logs, the names in Stock collection don't match the ones in the Form
@@ -230,17 +204,12 @@ router.post("/", async (req, res, next) => {
     }
 
     // Record Sale using salesModel
-    // const sales = new salesModel(body);
     const sales = new salesModel(req.body);
     await sales.save({ session })
 
     // Commit transaction
     await session.commitTransaction();
     session.endSession();
-
-    // console.log("Stock Found:", stock)
-    // const savedSales = await sales.save()
-    // console.log(`Success: ${cleanName} stock reduced from ${currentTonnage} to ${newTonnage}`);
 
     res.status(201).json({ message: "Sale successful", remainingStock: updatedStock.tonnage });
 

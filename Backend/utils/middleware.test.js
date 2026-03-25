@@ -7,6 +7,13 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
+/**
+ * AUTH MIDDLEWARE UNIT TESTS
+ * Tests authentication logic:
+ * - Missing token
+ * - Invalid token
+ * - Valid token
+ */
 describe("authMiddleware unit tests", () => {
   let req, res, next;
 
@@ -19,6 +26,12 @@ describe("authMiddleware unit tests", () => {
     next = jest.fn();
   });
 
+  /**
+   * Test: No token provided
+   * Expectation:
+   * - Return 401 Unauthorized
+   * - Do not call next()
+   */
   it("should return 401 if no token is provided", () => {
     authMiddleware(req, res, next);
 
@@ -27,6 +40,12 @@ describe("authMiddleware unit tests", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  /**
+   * Test: Invalid token
+   * Expectation:
+   * - Return 401 Unauthorized
+   * - Do not call next()
+   */
   it("should return 401 if token is invalid", () => {
     req.headers.authorization = "Bearer invalidtoken123";
     authMiddleware(req, res, next);
@@ -36,6 +55,12 @@ describe("authMiddleware unit tests", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  /**
+   * Test: Valid token
+   * Expectation:
+   * - Call next()
+   * - Attach decoded payload to req.user
+   */
   it("should allow access if token is valid", () => {
     const payload = { userName: "john", role: "manager" };
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
@@ -50,7 +75,14 @@ describe("authMiddleware unit tests", () => {
 });
 
 
-// Only "sales" role is allowed
+/**
+ * AUTHORIZE ROLES UNIT TESTS
+ * Tests role-based access control:
+ * - Deny access if role not allowed
+ * - Allow access if role matches
+ *
+ * Only "sales" role is allowed in these tests
+ */
 describe("authorizeRoles unit tests", () => {
   let req, res, next;
 
@@ -63,6 +95,12 @@ describe("authorizeRoles unit tests", () => {
     next = jest.fn();
   });
 
+  /**
+   * Test: Role not allowed
+   * Expectation:
+   * - Return 403 Forbidden
+   * - Do not call next()
+   */
   it("should deny access if role not allowed", () => {
     const middleware = authorizeRoles("sales");
     middleware(req, res, next);
@@ -72,6 +110,12 @@ describe("authorizeRoles unit tests", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  /**
+   * Test: Role allowed
+   * Expectation:
+   * - Call next()
+   * - Do not send any error response
+   */
   it("should allow access if role is allowed", () => {
     req.user.role = "sales";
     const middleware = authorizeRoles("sales");
