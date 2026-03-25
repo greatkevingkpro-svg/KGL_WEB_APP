@@ -10,6 +10,13 @@ const apiClient = axios.create({
     }
 });
 
+/**
+ * REQUEST INTERCEPTOR
+ * Runs BEFORE every HTTP request is sent
+ *
+ * Purpose:
+ * - Attach authentication token automatically
+ */
 apiClient.interceptors.request.use(
     (config) => {
         const userStore = useUserStore();
@@ -24,6 +31,14 @@ apiClient.interceptors.request.use(
     }
 )
 
+/**
+ * RESPONSE INTERCEPTOR
+ * Runs AFTER every HTTP response is received
+ *
+ * Purpose:
+ * - Handle global response behavior
+ * - Catch authentication errors (e.g. expired token)
+ */
 apiClient.interceptors.response.use(
     (response)=> {
         console.log("axios response", response)
